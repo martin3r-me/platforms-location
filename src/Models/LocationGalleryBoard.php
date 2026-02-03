@@ -5,6 +5,7 @@ namespace Platform\Location\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Platform\Core\Traits\HasContextFileReferences;
 use Symfony\Component\Uid\UuidV7;
 
 /**
@@ -12,6 +13,8 @@ use Symfony\Component\Uid\UuidV7;
  */
 class LocationGalleryBoard extends Model
 {
+    use HasContextFileReferences;
+
     protected $table = 'location_gallery_boards';
 
     protected $fillable = [

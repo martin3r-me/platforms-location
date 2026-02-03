@@ -54,9 +54,9 @@
                         <div
                             wire:sortable.item="{{ $item['id'] }}"
                             wire:key="item-{{ $item['id'] }}"
-                            class="group bg-white rounded-xl border border-[var(--ui-border)]/60 overflow-hidden shadow-sm"
+                            class="group"
                         >
-                            <div class="flex items-start gap-3 p-4">
+                            <div class="flex items-start gap-2 py-2">
                                 {{-- Drag Handle --}}
                                 <div wire:sortable.handle class="cursor-move p-1 text-[var(--ui-muted)] hover:text-[var(--ui-primary)] flex-shrink-0 mt-1" title="Zum Verschieben ziehen">
                                     @svg('heroicon-o-bars-3', 'w-5 h-5')
@@ -84,7 +84,8 @@
 
                                                 this.editor = new Editor({
                                                     el: this.$refs.editorEl,
-                                                    height: '200px',
+                                                    height: 'auto',
+                                                    minHeight: '100px',
                                                     initialEditType: 'wysiwyg',
                                                     previewStyle: 'tab',
                                                     hideModeSwitch: true,
