@@ -81,4 +81,12 @@ class LocationContentBoard extends Model
     {
         return $this->hasMany(LocationContentBoardSection::class, 'content_board_id')->orderBy('order');
     }
+
+    /**
+     * Items dieses Content Boards (vereinfachte Struktur)
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(LocationContentBoardItem::class, 'content_board_id')->orderBy('order');
+    }
 }

@@ -23,7 +23,7 @@
             <x-ui-panel title="Sites" :subtitle="count($sites) . ' Site(s)'">
                 <div class="space-y-3">
                     @forelse($sites as $site)
-                        <div class="p-4 rounded-md border border-[var(--ui-border)] bg-white hover:bg-[var(--ui-muted-5)] transition">
+                        <a href="{{ route('location.sites.locations', $site) }}" wire:navigate class="block p-4 rounded-md border border-[var(--ui-border)] bg-white hover:bg-[var(--ui-muted-5)] hover:border-[var(--ui-secondary)]/30 transition cursor-pointer">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2">
@@ -51,7 +51,7 @@
                                     @endif
 
                                     <div class="mt-2 flex items-center gap-4 text-xs text-[var(--ui-muted)]">
-                                        <span>{{ $site->locations_count }} Location(s)</span>
+                                        <span class="font-medium text-[var(--ui-secondary)]">{{ $site->locations_count }} Location(s)</span>
                                         @if($site->country_code)
                                             <span>{{ $site->country_code }}</span>
                                         @endif
@@ -65,9 +65,10 @@
                                     @if($site->done)
                                         <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Erledigt</span>
                                     @endif
+                                    @svg('heroicon-o-chevron-right', 'w-5 h-5 text-[var(--ui-muted)]')
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     @empty
                         <div class="p-6 text-center text-[var(--ui-muted)] bg-white rounded-md border border-[var(--ui-border)]">
                             <p>Noch keine Sites vorhanden.</p>
@@ -89,12 +90,6 @@
                             <span class="flex items-center gap-2">
                                 @svg('heroicon-o-home', 'w-4 h-4')
                                 Dashboard
-                            </span>
-                        </x-ui-button>
-                        <x-ui-button variant="secondary-outline" size="sm" :href="route('location.locations.index')" wire:navigate class="w-full">
-                            <span class="flex items-center gap-2">
-                                @svg('heroicon-o-map-pin', 'w-4 h-4')
-                                Locations
                             </span>
                         </x-ui-button>
                     </div>

@@ -19,10 +19,6 @@
             @svg('heroicon-o-globe-alt', 'w-4 h-4 text-[var(--ui-secondary)]')
             <span class="ml-2 text-sm">Sites</span>
         </x-ui-sidebar-item>
-        <x-ui-sidebar-item :href="route('location.locations.index')">
-            @svg('heroicon-o-map-pin', 'w-4 h-4 text-[var(--ui-secondary)]')
-            <span class="ml-2 text-sm">Locations</span>
-        </x-ui-sidebar-item>
     </x-ui-sidebar-list>
 
     {{-- Collapsed: Icons-only für Allgemein --}}
@@ -39,9 +35,6 @@
         <div class="flex flex-col gap-2">
             <a href="{{ route('location.sites.index') }}" wire:navigate class="flex items-center justify-center p-2 rounded-md text-[var(--ui-secondary)] hover:bg-[var(--ui-muted-5)]">
                 @svg('heroicon-o-globe-alt', 'w-5 h-5')
-            </a>
-            <a href="{{ route('location.locations.index') }}" wire:navigate class="flex items-center justify-center p-2 rounded-md text-[var(--ui-secondary)] hover:bg-[var(--ui-muted-5)]">
-                @svg('heroicon-o-map-pin', 'w-5 h-5')
             </a>
         </div>
     </div>

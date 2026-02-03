@@ -14,6 +14,7 @@ class CreateLocationModal extends Component
     public $name = '';
     public $description = '';
     public $site_id = null;
+    public $preselectedSiteId = null;
 
     public function rules(): array
     {
@@ -27,10 +28,11 @@ class CreateLocationModal extends Component
     #[On('open-modal-create-location')]
     public function openModal($siteId = null)
     {
-        $this->reset(['name', 'description', 'site_id']);
+        $this->reset(['name', 'description', 'site_id', 'preselectedSiteId']);
 
         if ($siteId) {
             $this->site_id = $siteId;
+            $this->preselectedSiteId = $siteId;
         }
 
         $this->modalShow = true;
@@ -64,10 +66,16 @@ class CreateLocationModal extends Component
             'noticable_id' => $location->id,
         ]);
 
-        $this->reset(['name', 'description', 'site_id']);
+        $redirectSiteId = $this->preselectedSiteId;
+        $this->reset(['name', 'description', 'site_id', 'preselectedSiteId']);
         $this->closeModal();
         $this->dispatch('locationCreated');
-        $this->redirect(route('location.locations.index'), navigate: true);
+
+        if ($redirectSiteId) {
+            $this->redirect(route('location.sites.locations', $redirectSiteId), navigate: true);
+        } else {
+            $this->redirect(route('location.locations.index'), navigate: true);
+        }
     }
 
     public function closeModal()
@@ -89,6 +97,7 @@ class CreateLocationModal extends Component
     {
         return view('location::livewire.create-location-modal', [
             'sites' => $this->sites,
+            'preselectedSite' => $this->preselectedSiteId ? $this->sites->firstWhere('id', $this->preselectedSiteId) : null,
         ])->layout('platform::layouts.app');
     }
 }
