@@ -15,37 +15,14 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
 
-            // Verknüpfung zum Standort
-            $table->foreignId('standort_id')->constrained('location_standorte')->cascadeOnDelete();
+            // Link to Site
+            $table->foreignId('site_id')->constrained('location_sites')->cascadeOnDelete();
 
             $table->string('name');
             $table->text('description')->nullable();
             $table->integer('order')->default(0);
 
-            // Adresse
-            $table->string('street')->nullable();
-            $table->string('street_number')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('city')->nullable();
-            $table->string('state')->nullable();
-            $table->string('country')->nullable();
-            $table->string('country_code', 2)->nullable(); // ISO 3166-1 alpha-2
-
-            // GPS-Koordinaten
-            $table->decimal('latitude', 10, 8)->nullable();
-            $table->decimal('longitude', 11, 8)->nullable();
-
-            // International
-            $table->boolean('is_international')->default(false);
-            $table->string('timezone')->nullable();
-
-            // Kontakt
-            $table->string('phone')->nullable();
-            $table->string('email')->nullable();
-            $table->string('website')->nullable();
-            $table->text('notes')->nullable();
-
-            // User/Team-Kontext
+            // User/Team context
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('team_id')->constrained('teams')->cascadeOnDelete();
 
@@ -56,13 +33,11 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // Indexe
-            $table->index(['standort_id']);
+            // Indexes
+            $table->index(['site_id']);
             $table->index(['team_id']);
             $table->index('uuid');
             $table->index('name');
-            $table->index('country_code');
-            $table->index(['latitude', 'longitude']);
         });
     }
 

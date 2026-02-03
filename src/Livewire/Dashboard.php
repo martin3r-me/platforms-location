@@ -13,7 +13,7 @@ class Dashboard extends Component
             'model' => null,
             'modelId' => null,
             'subject' => 'Location Dashboard',
-            'description' => 'Übersicht aller Standorte',
+            'description' => 'Übersicht aller Sites und Locations',
             'url' => route('location.dashboard'),
             'source' => 'location.dashboard',
             'recipients' => [],

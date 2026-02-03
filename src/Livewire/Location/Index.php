@@ -12,12 +12,13 @@ class Index extends Component
     {
         $user = Auth::user();
         $team = $user->currentTeam;
-        
+
         $locations = LocationLocation::query()
             ->where('team_id', $team->id)
+            ->with('site')
             ->orderBy('name')
             ->get();
-        
+
         return view('location::livewire.location.index', [
             'locations' => $locations,
         ])->layout('platform::layouts.app');

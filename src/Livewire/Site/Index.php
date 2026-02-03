@@ -1,10 +1,10 @@
 <?php
 
-namespace Platform\Location\Livewire\Standort;
+namespace Platform\Location\Livewire\Site;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use Platform\Location\Models\LocationStandort;
+use Platform\Location\Models\LocationSite;
 
 class Index extends Component
 {
@@ -12,17 +12,17 @@ class Index extends Component
     {
         $user = Auth::user();
         $team = $user->currentTeam;
-        
-        $standorte = LocationStandort::query()
+
+        $sites = LocationSite::query()
             ->where('team_id', $team->id)
-            ->with('location')
+            ->withCount('locations')
             ->orderBy('name')
             ->get();
-        
-        $internationalCount = $standorte->where('is_international', true)->count();
-        
-        return view('location::livewire.standort.index', [
-            'standorte' => $standorte,
+
+        $internationalCount = $sites->where('is_international', true)->count();
+
+        return view('location::livewire.site.index', [
+            'sites' => $sites,
             'internationalCount' => $internationalCount,
         ])->layout('platform::layouts.app');
     }

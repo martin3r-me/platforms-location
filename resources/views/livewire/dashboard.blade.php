@@ -6,7 +6,7 @@
     <x-ui-page-container>
         <div class="space-y-6">
             {{-- Welcome Section --}}
-            <x-ui-panel title="Willkommen im Location Management" subtitle="Verwalte deine Standorte und Orte">
+            <x-ui-panel title="Willkommen im Location Management" subtitle="Verwalte deine Sites und Locations">
                 <div class="p-6 text-center">
                     <div class="mb-4">
                         @svg('heroicon-o-map-pin', 'w-16 h-16 text-[var(--ui-primary)] mx-auto')
@@ -15,7 +15,7 @@
                         Location Management
                     </h2>
                     <p class="text-[var(--ui-muted)]">
-                        Hier kannst du in Zukunft deine Standorte verwalten.
+                        Hier kannst du in Zukunft deine Sites und Locations verwalten.
                     </p>
                 </div>
             </x-ui-panel>
@@ -23,26 +23,18 @@
             {{-- Placeholder Stats --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <x-ui-dashboard-tile
-                    title="Standorte"
-                    :count="0"
-                    subtitle="Gesamt"
-                    icon="map-pin"
-                    variant="secondary"
-                    size="lg"
-                />
-                <x-ui-dashboard-tile
-                    title="Aktive Standorte"
-                    :count="0"
-                    subtitle="Aktiv"
-                    icon="check-circle"
-                    variant="secondary"
-                    size="lg"
-                />
-                <x-ui-dashboard-tile
-                    title="Regionen"
+                    title="Sites"
                     :count="0"
                     subtitle="Gesamt"
                     icon="globe-alt"
+                    variant="secondary"
+                    size="lg"
+                />
+                <x-ui-dashboard-tile
+                    title="Aktive Sites"
+                    :count="0"
+                    subtitle="Aktiv"
+                    icon="check-circle"
                     variant="secondary"
                     size="lg"
                 />
@@ -51,6 +43,14 @@
                     :count="0"
                     subtitle="Gesamt"
                     icon="map-pin"
+                    variant="secondary"
+                    size="lg"
+                />
+                <x-ui-dashboard-tile
+                    title="International"
+                    :count="0"
+                    subtitle="Locations"
+                    icon="globe-alt"
                     variant="secondary"
                     size="lg"
                 />
@@ -65,28 +65,28 @@
                 <div>
                     <h3 class="text-sm font-bold text-[var(--ui-secondary)] uppercase tracking-wider mb-3">Aktionen</h3>
                     <div class="space-y-2">
+                        <x-ui-button variant="success" size="sm" x-data @click="$dispatch('open-modal-create-site')" class="w-full">
+                            <span class="flex items-center gap-2">
+                                @svg('heroicon-o-plus', 'w-4 h-4')
+                                Neue Site
+                            </span>
+                        </x-ui-button>
                         <x-ui-button variant="success" size="sm" x-data @click="$dispatch('open-modal-create-location')" class="w-full">
                             <span class="flex items-center gap-2">
                                 @svg('heroicon-o-plus', 'w-4 h-4')
                                 Neue Location
                             </span>
                         </x-ui-button>
-                        <x-ui-button variant="success" size="sm" x-data @click="$dispatch('open-modal-create-standort')" class="w-full">
+                        <x-ui-button variant="secondary-outline" size="sm" :href="route('location.sites.index')" wire:navigate class="w-full">
                             <span class="flex items-center gap-2">
-                                @svg('heroicon-o-plus', 'w-4 h-4')
-                                Neuer Standort
+                                @svg('heroicon-o-globe-alt', 'w-4 h-4')
+                                Sites
                             </span>
                         </x-ui-button>
                         <x-ui-button variant="secondary-outline" size="sm" :href="route('location.locations.index')" wire:navigate class="w-full">
                             <span class="flex items-center gap-2">
                                 @svg('heroicon-o-map-pin', 'w-4 h-4')
                                 Locations
-                            </span>
-                        </x-ui-button>
-                        <x-ui-button variant="secondary-outline" size="sm" :href="route('location.standorte.index')" wire:navigate class="w-full">
-                            <span class="flex items-center gap-2">
-                                @svg('heroicon-o-globe-alt', 'w-4 h-4')
-                                Standorte
                             </span>
                         </x-ui-button>
                     </div>
@@ -97,7 +97,7 @@
                     <h3 class="text-sm font-bold text-[var(--ui-secondary)] uppercase tracking-wider mb-3">Schnellstatistiken</h3>
                     <div class="space-y-3">
                         <div class="p-3 bg-[var(--ui-muted-5)] rounded-lg border border-[var(--ui-border)]/40">
-                            <div class="text-xs text-[var(--ui-muted)]">Standorte</div>
+                            <div class="text-xs text-[var(--ui-muted)]">Sites</div>
                             <div class="text-lg font-bold text-[var(--ui-secondary)]">0</div>
                         </div>
                         <div class="p-3 bg-[var(--ui-muted-5)] rounded-lg border border-[var(--ui-border)]/40">
@@ -135,7 +135,7 @@
         </x-ui-page-sidebar>
     </x-slot>
 
-    {{-- Modals innerhalb des Page-Roots halten (ein Root-Element) --}}
+    {{-- Modals --}}
     <livewire:location.create-location-modal />
-    <livewire:location.create-standort-modal />
+    <livewire:location.create-site-modal />
 </x-ui-page>

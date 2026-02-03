@@ -26,20 +26,35 @@
                         <div class="p-4 rounded-md border border-[var(--ui-border)] bg-white hover:bg-[var(--ui-muted-5)] transition">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
-                                    <h3 class="font-semibold text-[var(--ui-secondary)]">{{ $location->name }}</h3>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-semibold text-[var(--ui-secondary)]">{{ $location->name }}</h3>
+                                    </div>
                                     @if($location->description)
                                         <p class="text-sm text-[var(--ui-muted)] mt-1">{{ $location->description }}</p>
                                     @endif
+
+                                    {{-- Site --}}
+                                    @if($location->site)
+                                        <div class="mt-2 text-sm text-[var(--ui-secondary)]">
+                                            <span class="font-medium">Site:</span> {{ $location->site->name }}
+                                            @if($location->site->is_international)
+                                                <span class="ml-2 px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded">International</span>
+                                            @endif
+                                        </div>
+                                        @if($location->site->full_address)
+                                            <div class="mt-1 text-xs text-[var(--ui-muted)]">
+                                                {{ $location->site->full_address }}
+                                            </div>
+                                        @endif
+                                    @endif
+
                                     <div class="mt-2 flex items-center gap-4 text-xs text-[var(--ui-muted)]">
-                                        <span>{{ $location->standorte()->count() }} Standort(e)</span>
                                         <span>{{ $location->created_at->format('d.m.Y') }}</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    @if($location->is_active)
-                                        <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Aktiv</span>
-                                    @else
-                                        <span class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">Inaktiv</span>
+                                    @if($location->done)
+                                        <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Erledigt</span>
                                     @endif
                                 </div>
                             </div>
@@ -67,10 +82,10 @@
                                 Dashboard
                             </span>
                         </x-ui-button>
-                        <x-ui-button variant="secondary-outline" size="sm" :href="route('location.standorte.index')" wire:navigate class="w-full">
+                        <x-ui-button variant="secondary-outline" size="sm" :href="route('location.sites.index')" wire:navigate class="w-full">
                             <span class="flex items-center gap-2">
                                 @svg('heroicon-o-globe-alt', 'w-4 h-4')
-                                Standorte
+                                Sites
                             </span>
                         </x-ui-button>
                     </div>
@@ -104,6 +119,6 @@
         </x-ui-page-sidebar>
     </x-slot>
 
-    {{-- Modals innerhalb des Page-Roots halten (ein Root-Element) --}}
+    {{-- Modals --}}
     <livewire:location.create-location-modal />
 </x-ui-page>

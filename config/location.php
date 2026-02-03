@@ -28,14 +28,14 @@ return [
             'group' => 'Verwaltung',
             'items' => [
                 [
+                    'label' => 'Sites',
+                    'route' => 'location.sites.index',
+                    'icon'  => 'heroicon-o-globe-alt',
+                ],
+                [
                     'label' => 'Locations',
                     'route' => 'location.locations.index',
                     'icon'  => 'heroicon-o-map-pin',
-                ],
-                [
-                    'label' => 'Standorte',
-                    'route' => 'location.standorte.index',
-                    'icon'  => 'heroicon-o-globe-alt',
                 ],
             ],
         ],

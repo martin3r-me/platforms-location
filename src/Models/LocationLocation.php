@@ -10,8 +10,8 @@ use Platform\ActivityLog\Traits\LogsActivity;
 use Symfony\Component\Uid\UuidV7;
 
 /**
- * Location - Gehört zu einem Standort
- * Hat Adressdaten, Content Boards und Gallery Boards.
+ * Location - Simple child entity belonging to a Site
+ * Has Content Boards and Gallery Boards.
  */
 class LocationLocation extends Model
 {
@@ -21,29 +21,10 @@ class LocationLocation extends Model
 
     protected $fillable = [
         'uuid',
-        'standort_id',
+        'site_id',
         'name',
         'description',
         'order',
-        // Adresse
-        'street',
-        'street_number',
-        'postal_code',
-        'city',
-        'state',
-        'country',
-        'country_code',
-        // GPS
-        'latitude',
-        'longitude',
-        // International
-        'is_international',
-        'timezone',
-        // Kontakt
-        'phone',
-        'email',
-        'website',
-        'notes',
         // User/Team
         'user_id',
         'team_id',
@@ -53,9 +34,6 @@ class LocationLocation extends Model
 
     protected $casts = [
         'uuid' => 'string',
-        'is_international' => 'boolean',
-        'latitude' => 'decimal:8',
-        'longitude' => 'decimal:8',
         'done' => 'boolean',
         'done_at' => 'datetime',
     ];
@@ -72,21 +50,21 @@ class LocationLocation extends Model
             }
 
             if (empty($model->order)) {
-                $model->order = static::where('standort_id', $model->standort_id)->max('order') + 1;
+                $model->order = static::where('site_id', $model->site_id)->max('order') + 1;
             }
         });
     }
 
     /**
-     * Standort, zu dem diese Location gehört
+     * Site this location belongs to
      */
-    public function standort(): BelongsTo
+    public function site(): BelongsTo
     {
-        return $this->belongsTo(LocationStandort::class, 'standort_id');
+        return $this->belongsTo(LocationSite::class, 'site_id');
     }
 
     /**
-     * Benutzer, der die Location erstellt hat
+     * User who created the location
      */
     public function user(): BelongsTo
     {
@@ -94,7 +72,7 @@ class LocationLocation extends Model
     }
 
     /**
-     * Team, dem die Location gehört
+     * Team that owns the location
      */
     public function team(): BelongsTo
     {
@@ -102,7 +80,7 @@ class LocationLocation extends Model
     }
 
     /**
-     * Content Boards dieser Location
+     * Content Boards of this location
      */
     public function contentBoards(): HasMany
     {
@@ -110,59 +88,11 @@ class LocationLocation extends Model
     }
 
     /**
-     * Gallery Boards dieser Location
+     * Gallery Boards of this location
      */
     public function galleryBoards(): HasMany
     {
         return $this->hasMany(LocationGalleryBoard::class, 'location_id')->orderBy('order');
-    }
-
-    /**
-     * Vollständige Adresse als String
-     */
-    public function getFullAddressAttribute(): string
-    {
-        $parts = [];
-
-        if ($this->street) {
-            $street = $this->street;
-            if ($this->street_number) {
-                $street .= ' ' . $this->street_number;
-            }
-            $parts[] = $street;
-        }
-
-        if ($this->postal_code || $this->city) {
-            $city = trim(($this->postal_code ?? '') . ' ' . ($this->city ?? ''));
-            if ($city) {
-                $parts[] = $city;
-            }
-        }
-
-        if ($this->state) {
-            $parts[] = $this->state;
-        }
-
-        if ($this->country) {
-            $parts[] = $this->country;
-        }
-
-        return implode(', ', $parts);
-    }
-
-    /**
-     * GPS-Koordinaten als Array
-     */
-    public function getGpsCoordinatesAttribute(): ?array
-    {
-        if ($this->latitude && $this->longitude) {
-            return [
-                'lat' => (float) $this->latitude,
-                'lng' => (float) $this->longitude,
-            ];
-        }
-
-        return null;
     }
 
     /**
@@ -173,24 +103,9 @@ class LocationLocation extends Model
         return $query->where('team_id', $teamId);
     }
 
-    public function scopeForStandort($query, $standortId)
+    public function scopeForSite($query, $siteId)
     {
-        return $query->where('standort_id', $standortId);
-    }
-
-    public function scopeInternational($query)
-    {
-        return $query->where('is_international', true);
-    }
-
-    public function scopeNational($query)
-    {
-        return $query->where('is_international', false);
-    }
-
-    public function scopeWithGps($query)
-    {
-        return $query->whereNotNull('latitude')->whereNotNull('longitude');
+        return $query->where('site_id', $siteId);
     }
 
     public function scopeDone($query)

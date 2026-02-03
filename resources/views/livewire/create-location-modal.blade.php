@@ -1,6 +1,6 @@
 <x-ui-modal size="md" model="modalShow" header="Neue Location erstellen">
     <x-ui-form-grid :cols="1" :gap="4">
-        <x-ui-input-text 
+        <x-ui-input-text
             name="name"
             label="Name"
             wire:model="name"
@@ -9,12 +9,21 @@
             :errorKey="'name'"
         />
 
-        <x-ui-input-textarea 
+        <x-ui-input-textarea
             name="description"
             label="Beschreibung"
             wire:model="description"
             placeholder="Beschreibung eingeben..."
             :errorKey="'description'"
+        />
+
+        <x-ui-input-select
+            name="site_id"
+            label="Site"
+            wire:model="site_id"
+            :options="$sites->map(fn($s) => ['value' => $s->id, 'label' => $s->name])->values()"
+            required
+            :errorKey="'site_id'"
         />
     </x-ui-form-grid>
 

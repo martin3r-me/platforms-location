@@ -1,6 +1,6 @@
 <x-ui-page>
     <x-slot name="navbar">
-        <x-ui-page-navbar title="Standorte" icon="heroicon-o-map-pin" />
+        <x-ui-page-navbar title="Sites" icon="heroicon-o-globe-alt" />
     </x-slot>
 
     <x-ui-page-container>
@@ -8,77 +8,69 @@
             {{-- Header --}}
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold text-[var(--ui-secondary)]">Standorte</h1>
-                    <p class="text-[var(--ui-muted)] mt-1">Verwalte deine Standorte</p>
+                    <h1 class="text-2xl font-bold text-[var(--ui-secondary)]">Sites</h1>
+                    <p class="text-[var(--ui-muted)] mt-1">Verwalte deine Sites</p>
                 </div>
-                <x-ui-button variant="success" size="sm" x-data @click="$dispatch('open-modal-create-standort')">
+                <x-ui-button variant="success" size="sm" x-data @click="$dispatch('open-modal-create-site')">
                     <span class="inline-flex items-center gap-2">
                         @svg('heroicon-o-plus', 'w-4 h-4')
-                        <span>Neuer Standort</span>
+                        <span>Neue Site</span>
                     </span>
                 </x-ui-button>
             </div>
 
-            {{-- Standorte List --}}
-            <x-ui-panel title="Standorte" :subtitle="count($standorte) . ' Standort(e)'">
+            {{-- Sites List --}}
+            <x-ui-panel title="Sites" :subtitle="count($sites) . ' Site(s)'">
                 <div class="space-y-3">
-                    @forelse($standorte as $standort)
+                    @forelse($sites as $site)
                         <div class="p-4 rounded-md border border-[var(--ui-border)] bg-white hover:bg-[var(--ui-muted-5)] transition">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2">
-                                        <h3 class="font-semibold text-[var(--ui-secondary)]">{{ $standort->name }}</h3>
-                                        @if($standort->is_international)
+                                        <h3 class="font-semibold text-[var(--ui-secondary)]">{{ $site->name }}</h3>
+                                        @if($site->is_international)
                                             <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded">International</span>
                                         @endif
                                     </div>
-                                    @if($standort->description)
-                                        <p class="text-sm text-[var(--ui-muted)] mt-1">{{ $standort->description }}</p>
+                                    @if($site->description)
+                                        <p class="text-sm text-[var(--ui-muted)] mt-1">{{ $site->description }}</p>
                                     @endif
-                                    
-                                    {{-- Adresse --}}
-                                    @if($standort->full_address)
-                                        <div class="mt-2 text-sm text-[var(--ui-secondary)]">
-                                            <span class="font-medium">Adresse:</span> {{ $standort->full_address }}
+
+                                    {{-- Address --}}
+                                    @if($site->full_address)
+                                        <div class="mt-2 text-sm text-[var(--ui-muted)]">
+                                            <span class="font-medium">Adresse:</span> {{ $site->full_address }}
                                         </div>
                                     @endif
-                                    
+
                                     {{-- GPS --}}
-                                    @if($standort->latitude && $standort->longitude)
+                                    @if($site->latitude && $site->longitude)
                                         <div class="mt-1 text-xs text-[var(--ui-muted)]">
-                                            GPS: {{ number_format($standort->latitude, 6) }}, {{ number_format($standort->longitude, 6) }}
+                                            GPS: {{ number_format($site->latitude, 6) }}, {{ number_format($site->longitude, 6) }}
                                         </div>
                                     @endif
-                                    
-                                    {{-- Location --}}
-                                    @if($standort->location)
-                                        <div class="mt-1 text-xs text-[var(--ui-muted)]">
-                                            Location: {{ $standort->location->name }}
-                                        </div>
-                                    @endif
-                                    
+
                                     <div class="mt-2 flex items-center gap-4 text-xs text-[var(--ui-muted)]">
-                                        @if($standort->country_code)
-                                            <span>{{ $standort->country_code }}</span>
+                                        <span>{{ $site->locations_count }} Location(s)</span>
+                                        @if($site->country_code)
+                                            <span>{{ $site->country_code }}</span>
                                         @endif
-                                        @if($standort->timezone)
-                                            <span>{{ $standort->timezone }}</span>
+                                        @if($site->timezone)
+                                            <span>{{ $site->timezone }}</span>
                                         @endif
-                                        <span>{{ $standort->created_at->format('d.m.Y') }}</span>
+                                        <span>{{ $site->created_at->format('d.m.Y') }}</span>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    @if($standort->is_active)
-                                        <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Aktiv</span>
-                                    @else
-                                        <span class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">Inaktiv</span>
+                                    @if($site->done)
+                                        <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Erledigt</span>
                                     @endif
                                 </div>
                             </div>
                         </div>
                     @empty
                         <div class="p-6 text-center text-[var(--ui-muted)] bg-white rounded-md border border-[var(--ui-border)]">
-                            <p>Noch keine Standorte vorhanden.</p>
+                            <p>Noch keine Sites vorhanden.</p>
                         </div>
                     @endforelse
                 </div>
@@ -113,8 +105,8 @@
                     <h3 class="text-sm font-bold text-[var(--ui-secondary)] uppercase tracking-wider mb-3">Schnellstatistiken</h3>
                     <div class="space-y-3">
                         <div class="p-3 bg-[var(--ui-muted-5)] rounded-lg border border-[var(--ui-border)]/40">
-                            <div class="text-xs text-[var(--ui-muted)]">Standorte</div>
-                            <div class="text-lg font-bold text-[var(--ui-secondary)]">{{ count($standorte) }}</div>
+                            <div class="text-xs text-[var(--ui-muted)]">Sites</div>
+                            <div class="text-lg font-bold text-[var(--ui-secondary)]">{{ count($sites) }}</div>
                         </div>
                         <div class="p-3 bg-[var(--ui-muted-5)] rounded-lg border border-[var(--ui-border)]/40">
                             <div class="text-xs text-[var(--ui-muted)]">International</div>
@@ -132,7 +124,7 @@
                 <div class="text-sm text-[var(--ui-muted)]">Letzte Aktivitäten</div>
                 <div class="space-y-3 text-sm">
                     <div class="p-2 rounded border border-[var(--ui-border)]/60 bg-[var(--ui-muted-5)]">
-                        <div class="font-medium text-[var(--ui-secondary)] truncate">Standorte-Übersicht geladen</div>
+                        <div class="font-medium text-[var(--ui-secondary)] truncate">Sites-Übersicht geladen</div>
                         <div class="text-[var(--ui-muted)]">vor 1 Minute</div>
                     </div>
                 </div>
@@ -140,6 +132,6 @@
         </x-ui-page-sidebar>
     </x-slot>
 
-    {{-- Modals innerhalb des Page-Roots halten (ein Root-Element) --}}
-    <livewire:location.create-standort-modal />
+    {{-- Modals --}}
+    <livewire:location.create-site-modal />
 </x-ui-page>

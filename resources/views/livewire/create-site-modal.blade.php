@@ -1,33 +1,24 @@
-<x-ui-modal size="lg" model="modalShow" header="Neuen Standort erstellen">
+<x-ui-modal size="lg" model="modalShow" header="Neue Site erstellen">
     <div class="space-y-6">
         {{-- Basis-Informationen --}}
         <div>
             <h3 class="text-sm font-semibold text-[var(--ui-secondary)] mb-4">Basis-Informationen</h3>
             <x-ui-form-grid :cols="1" :gap="4">
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="name"
                     label="Name"
                     wire:model="name"
-                    placeholder="Standort Name eingeben..."
+                    placeholder="Site Name eingeben..."
                     required
                     :errorKey="'name'"
                 />
 
-                <x-ui-input-textarea 
+                <x-ui-input-textarea
                     name="description"
                     label="Beschreibung"
                     wire:model="description"
                     placeholder="Beschreibung eingeben..."
                     :errorKey="'description'"
-                />
-
-                <x-ui-input-select
-                    name="location_id"
-                    label="Location"
-                    wire:model="location_id"
-                    :options="$locations->map(fn($l) => ['value' => $l->id, 'label' => $l->name])->prepend(['value' => '', 'label' => 'Keine Location'])->values()"
-                    :nullable="true"
-                    :errorKey="'location_id'"
                 />
             </x-ui-form-grid>
         </div>
@@ -36,7 +27,7 @@
         <div>
             <h3 class="text-sm font-semibold text-[var(--ui-secondary)] mb-4">Adresse</h3>
             <x-ui-form-grid :cols="2" :gap="4">
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="street"
                     label="Straße"
                     wire:model="street"
@@ -44,7 +35,7 @@
                     :errorKey="'street'"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="street_number"
                     label="Hausnummer"
                     wire:model="street_number"
@@ -52,7 +43,7 @@
                     :errorKey="'street_number'"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="postal_code"
                     label="PLZ"
                     wire:model="postal_code"
@@ -60,7 +51,7 @@
                     :errorKey="'postal_code'"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="city"
                     label="Stadt"
                     wire:model="city"
@@ -68,7 +59,7 @@
                     :errorKey="'city'"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="state"
                     label="Bundesland/Region"
                     wire:model="state"
@@ -76,7 +67,7 @@
                     :errorKey="'state'"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="country"
                     label="Land"
                     wire:model="country"
@@ -84,7 +75,7 @@
                     :errorKey="'country'"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="country_code"
                     label="Ländercode (ISO 3166-1 alpha-2)"
                     wire:model="country_code"
@@ -99,7 +90,7 @@
         <div>
             <h3 class="text-sm font-semibold text-[var(--ui-secondary)] mb-4">GPS-Koordinaten</h3>
             <x-ui-form-grid :cols="2" :gap="4">
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="latitude"
                     label="Breitengrad"
                     type="number"
@@ -109,7 +100,7 @@
                     :errorKey="'latitude'"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="longitude"
                     label="Längengrad"
                     type="number"
@@ -125,15 +116,15 @@
         <div>
             <h3 class="text-sm font-semibold text-[var(--ui-secondary)] mb-4">International</h3>
             <x-ui-form-grid :cols="1" :gap="4">
-                <x-ui-input-checkbox 
+                <x-ui-input-checkbox
                     model="is_international"
                     name="is_international"
                     wire:model="is_international"
-                    checked-label="Internationaler Standort"
-                    unchecked-label="Nationaler Standort"
+                    checked-label="Internationale Site"
+                    unchecked-label="Nationale Site"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="timezone"
                     label="Zeitzone"
                     wire:model="timezone"
@@ -147,7 +138,7 @@
         <div>
             <h3 class="text-sm font-semibold text-[var(--ui-secondary)] mb-4">Kontaktinformationen</h3>
             <x-ui-form-grid :cols="1" :gap="4">
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="phone"
                     label="Telefon"
                     wire:model="phone"
@@ -155,7 +146,7 @@
                     :errorKey="'phone'"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="email"
                     label="E-Mail"
                     type="email"
@@ -164,7 +155,7 @@
                     :errorKey="'email'"
                 />
 
-                <x-ui-input-text 
+                <x-ui-input-text
                     name="website"
                     label="Website"
                     type="url"
@@ -179,7 +170,7 @@
         <div>
             <h3 class="text-sm font-semibold text-[var(--ui-secondary)] mb-4">Notizen</h3>
             <x-ui-form-grid :cols="1" :gap="4">
-                <x-ui-input-textarea 
+                <x-ui-input-textarea
                     name="notes"
                     label="Notizen"
                     wire:model="notes"
