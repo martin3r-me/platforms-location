@@ -146,6 +146,20 @@
                                 <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <span class="px-1.5 py-0.5 text-xs font-medium bg-black/50 text-white rounded" x-text="index + 1"></span>
                                 </div>
+
+                                {{-- Titel-Eingabe (unter dem Bild) --}}
+                                <template x-if="item.context_file_id">
+                                    <div class="p-2 border-t border-[var(--ui-border)]/40">
+                                        <input
+                                            type="text"
+                                            x-model="item.title"
+                                            @blur="$wire.updateItemTitle(item.id, item.title)"
+                                            @keydown.enter="$event.target.blur()"
+                                            placeholder="Titel eingeben..."
+                                            class="w-full text-xs px-2 py-1 border border-transparent rounded bg-transparent hover:border-[var(--ui-border)] focus:border-[var(--ui-primary)] focus:ring-1 focus:ring-[var(--ui-primary)] transition-colors"
+                                        />
+                                    </div>
+                                </template>
                             </div>
                         </template>
                     </div>

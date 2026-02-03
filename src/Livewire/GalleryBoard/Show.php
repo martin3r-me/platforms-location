@@ -4,6 +4,7 @@ namespace Platform\Location\Livewire\GalleryBoard;
 
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Platform\Core\Models\ContextFileReference;
 use Platform\Location\Models\LocationGalleryBoard;
 
 class Show extends Component
@@ -99,6 +100,27 @@ class Show extends Component
         $this->galleryBoard->removeFileReference($referenceId);
         $this->loadItems();
         $this->dispatch('notify', ['type' => 'success', 'message' => 'Bild entfernt']);
+    }
+
+    public function updateItemTitle(int $referenceId, ?string $title): void
+    {
+        $reference = ContextFileReference::where('id', $referenceId)
+            ->where('reference_type', LocationGalleryBoard::class)
+            ->where('reference_id', $this->galleryBoard->id)
+            ->first();
+
+        if ($reference) {
+            // Fallback auf Dateiname wenn leer
+            if (empty(trim($title ?? ''))) {
+                $title = $reference->contextFile?->original_name ?? 'Unbenannt';
+            }
+
+            $reference->update([
+                'meta' => array_merge($reference->meta ?? [], ['title' => $title])
+            ]);
+        }
+
+        $this->loadItems();
     }
 
     public function render()
