@@ -64,7 +64,50 @@
 
                                 {{-- Toast UI Editor --}}
                                 <div class="flex-1 min-w-0" wire:ignore>
-                                    <div x-data="contentBoardEditor({{ $item['id'] }}, @js($item['content']))" x-init="boot()">
+                                    <div
+                                        x-data="{
+                                            editor: null,
+                                            debounceTimer: null,
+                                            itemId: {{ $item['id'] }},
+                                            initialContent: @js($item['content'] ?? ''),
+                                            init() {
+                                                const Editor = window.ToastUIEditor;
+                                                if (!Editor) {
+                                                    window.addEventListener('toastui:ready', () => this.bootEditor(), { once: true });
+                                                    return;
+                                                }
+                                                this.bootEditor();
+                                            },
+                                            bootEditor() {
+                                                const Editor = window.ToastUIEditor;
+                                                if (!Editor) return;
+
+                                                this.editor = new Editor({
+                                                    el: this.$refs.editorEl,
+                                                    height: '200px',
+                                                    initialEditType: 'wysiwyg',
+                                                    previewStyle: 'tab',
+                                                    hideModeSwitch: true,
+                                                    usageStatistics: false,
+                                                    placeholder: 'Inhalt eingeben...',
+                                                    toolbarItems: [
+                                                        ['heading', 'bold', 'italic', 'strike'],
+                                                        ['ul', 'ol', 'task', 'quote'],
+                                                        ['link', 'code', 'hr'],
+                                                    ],
+                                                    initialValue: this.initialContent || '',
+                                                });
+
+                                                this.editor.on('change', () => {
+                                                    clearTimeout(this.debounceTimer);
+                                                    this.debounceTimer = setTimeout(() => {
+                                                        const content = this.editor.getMarkdown();
+                                                        this.$wire.updateItemContent(this.itemId, content);
+                                                    }, 900);
+                                                });
+                                            }
+                                        }"
+                                    >
                                         <div x-ref="editorEl"></div>
                                     </div>
                                 </div>
@@ -160,45 +203,3 @@
         </x-ui-page-sidebar>
     </x-slot>
 </x-ui-page>
-
-@push('scripts')
-<script>
-function contentBoardEditor(itemId, initialContent) {
-    return {
-        editor: null,
-        debounceTimer: null,
-        boot() {
-            const Editor = window.ToastUIEditor;
-            if (!Editor) {
-                console.warn('ToastUIEditor not loaded');
-                return;
-            }
-
-            this.editor = new Editor({
-                el: this.$refs.editorEl,
-                height: '200px',
-                initialEditType: 'wysiwyg',
-                previewStyle: 'tab',
-                hideModeSwitch: true,
-                usageStatistics: false,
-                placeholder: 'Inhalt eingeben...',
-                toolbarItems: [
-                    ['heading', 'bold', 'italic', 'strike'],
-                    ['ul', 'ol', 'task', 'quote'],
-                    ['link', 'code', 'hr'],
-                ],
-                initialValue: initialContent || '',
-            });
-
-            this.editor.on('change', () => {
-                clearTimeout(this.debounceTimer);
-                this.debounceTimer = setTimeout(() => {
-                    const content = this.editor.getMarkdown();
-                    this.$wire.updateItemContent(itemId, content);
-                }, 900);
-            });
-        }
-    };
-}
-</script>
-@endpush
