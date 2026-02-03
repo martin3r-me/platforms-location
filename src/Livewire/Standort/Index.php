@@ -19,8 +19,11 @@ class Index extends Component
             ->orderBy('name')
             ->get();
         
+        $internationalCount = $standorte->where('is_international', true)->count();
+        
         return view('location::livewire.standort.index', [
             'standorte' => $standorte,
+            'internationalCount' => $internationalCount,
         ])->layout('platform::layouts.app');
     }
 }

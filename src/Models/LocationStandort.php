@@ -3,53 +3,39 @@
 namespace Platform\Location\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Platform\ActivityLog\Traits\LogsActivity;
 use Symfony\Component\Uid\UuidV7;
 
+/**
+ * Standort - Übergeordnete Einheit (z.B. "Areal Böhler")
+ * Locations gehören zu einem Standort.
+ */
 class LocationStandort extends Model
 {
-    use LogsActivity;
-    
+    use LogsActivity, SoftDeletes;
+
     protected $table = 'location_standorte';
-    
+
     protected $fillable = [
         'uuid',
         'name',
         'description',
-        'location_id', // FK zu LocationLocation
-        // Adresse
-        'street',
-        'street_number',
-        'postal_code',
-        'city',
-        'state',
-        'country',
-        'country_code', // ISO 3166-1 alpha-2 (z.B. DE, US, FR)
-        // GPS-Koordinaten
-        'latitude',
-        'longitude',
-        // International
-        'is_international',
-        'timezone',
-        // Zusätzliche Felder
-        'phone',
-        'email',
-        'website',
-        'notes',
-        // User/Team-Kontext
-        'created_by_user_id',
-        'owned_by_user_id',
+        'order',
+        'user_id',
         'team_id',
-        'is_active',
+        'done',
+        'done_at',
     ];
-    
+
     protected $casts = [
-        'is_active' => 'boolean',
-        'is_international' => 'boolean',
-        'latitude' => 'decimal:8',
-        'longitude' => 'decimal:8',
+        'uuid' => 'string',
+        'done' => 'boolean',
+        'done_at' => 'datetime',
     ];
-    
+
     protected static function booted(): void
     {
         static::creating(function (self $model) {
@@ -57,113 +43,55 @@ class LocationStandort extends Model
                 do {
                     $uuid = UuidV7::generate();
                 } while (self::where('uuid', $uuid)->exists());
-                
+
                 $model->uuid = $uuid;
+            }
+
+            if (empty($model->order)) {
+                $model->order = static::where('team_id', $model->team_id)->max('order') + 1;
             }
         });
     }
-    
+
     /**
-     * Beziehungen
+     * Benutzer, der den Standort erstellt hat
      */
-    public function createdByUser()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(\Platform\Core\Models\User::class, 'created_by_user_id');
+        return $this->belongsTo(\Platform\Core\Models\User::class);
     }
-    
-    public function ownedByUser()
-    {
-        return $this->belongsTo(\Platform\Core\Models\User::class, 'owned_by_user_id');
-    }
-    
-    public function team()
-    {
-        return $this->belongsTo(\Platform\Core\Models\Team::class, 'team_id');
-    }
-    
-    public function location()
-    {
-        return $this->belongsTo(LocationLocation::class, 'location_id');
-    }
-    
+
     /**
-     * Vollständige Adresse als String
+     * Team, dem der Standort gehört
      */
-    public function getFullAddressAttribute(): string
+    public function team(): BelongsTo
     {
-        $parts = [];
-        
-        if ($this->street) {
-            $street = $this->street;
-            if ($this->street_number) {
-                $street .= ' ' . $this->street_number;
-            }
-            $parts[] = $street;
-        }
-        
-        if ($this->postal_code || $this->city) {
-            $city = trim(($this->postal_code ?? '') . ' ' . ($this->city ?? ''));
-            if ($city) {
-                $parts[] = $city;
-            }
-        }
-        
-        if ($this->state) {
-            $parts[] = $this->state;
-        }
-        
-        if ($this->country) {
-            $parts[] = $this->country;
-        }
-        
-        return implode(', ', $parts);
+        return $this->belongsTo(\Platform\Core\Models\Team::class);
     }
-    
+
     /**
-     * GPS-Koordinaten als Array
+     * Alle Locations dieses Standorts
      */
-    public function getGpsCoordinatesAttribute(): ?array
+    public function locations(): HasMany
     {
-        if ($this->latitude && $this->longitude) {
-            return [
-                'lat' => (float) $this->latitude,
-                'lng' => (float) $this->longitude,
-            ];
-        }
-        
-        return null;
+        return $this->hasMany(LocationLocation::class, 'standort_id')->orderBy('order');
     }
-    
+
     /**
      * Scopes
      */
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-    
-    public function scopeInactive($query)
-    {
-        return $query->where('is_active', false);
-    }
-    
     public function scopeForTeam($query, $teamId)
     {
         return $query->where('team_id', $teamId);
     }
-    
-    public function scopeInternational($query)
+
+    public function scopeDone($query)
     {
-        return $query->where('is_international', true);
+        return $query->where('done', true);
     }
-    
-    public function scopeNational($query)
+
+    public function scopeNotDone($query)
     {
-        return $query->where('is_international', false);
-    }
-    
-    public function scopeWithGps($query)
-    {
-        return $query->whereNotNull('latitude')->whereNotNull('longitude');
+        return $query->where('done', false);
     }
 }

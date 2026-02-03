@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('location_standorte', function (Blueprint $table) {
+        Schema::create('location_locations', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            
-            // Standort-spezifische Felder
+
+            // Verknüpfung zum Standort
+            $table->foreignId('standort_id')->constrained('location_standorte')->cascadeOnDelete();
+
             $table->string('name');
             $table->text('description')->nullable();
-            
-            // Verknüpfung zu Location
-            $table->foreignId('location_id')->nullable()->constrained('location_locations')->nullOnDelete();
-            
+            $table->integer('order')->default(0);
+
             // Adresse
             $table->string('street')->nullable();
             $table->string('street_number')->nullable();
@@ -30,38 +30,38 @@ return new class extends Migration
             $table->string('state')->nullable();
             $table->string('country')->nullable();
             $table->string('country_code', 2)->nullable(); // ISO 3166-1 alpha-2
-            
+
             // GPS-Koordinaten
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
-            
+
             // International
             $table->boolean('is_international')->default(false);
-            $table->string('timezone')->nullable(); // z.B. 'Europe/Berlin', 'America/New_York'
-            
-            // Zusätzliche Felder
+            $table->string('timezone')->nullable();
+
+            // Kontakt
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('website')->nullable();
             $table->text('notes')->nullable();
-            
+
             // User/Team-Kontext
-            $table->foreignId('created_by_user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('owned_by_user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
-            
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('team_id')->constrained('teams')->cascadeOnDelete();
+
             // Status
-            $table->boolean('is_active')->default(true);
+            $table->boolean('done')->default(false);
+            $table->timestamp('done_at')->nullable();
+
             $table->timestamps();
-            
-            // Indexe für Performance
-            $table->index(['team_id', 'is_active']);
-            $table->index(['location_id', 'is_active']);
-            $table->index(['created_by_user_id', 'owned_by_user_id']);
+            $table->softDeletes();
+
+            // Indexe
+            $table->index(['standort_id']);
+            $table->index(['team_id']);
             $table->index('uuid');
             $table->index('name');
             $table->index('country_code');
-            $table->index('is_international');
             $table->index(['latitude', 'longitude']);
         });
     }
@@ -71,6 +71,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('location_standorte');
+        Schema::dropIfExists('location_locations');
     }
 };

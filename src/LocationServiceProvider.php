@@ -15,13 +15,12 @@ class LocationServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Falls in Zukunft Artisan Commands o.ä. nötig sind, hier rein
+        // Config laden (sollte in register() sein, nicht in boot())
+        $this->mergeConfigFrom(__DIR__.'/../config/location.php', 'location');
     }
 
     public function boot(): void
     {
-        // Schritt 1: Config laden
-        $this->mergeConfigFrom(__DIR__.'/../config/location.php', 'location');
         
         // Schritt 2: Existenzprüfung (config jetzt verfügbar)
         if (

@@ -47,10 +47,10 @@
                     size="lg"
                 />
                 <x-ui-dashboard-tile
-                    title="Letzte Aktualisierung"
-                    :count="now()->format('d.m.Y')"
-                    subtitle="Heute"
-                    icon="clock"
+                    title="Locations"
+                    :count="0"
+                    subtitle="Gesamt"
+                    icon="map-pin"
                     variant="secondary"
                     size="lg"
                 />
@@ -65,9 +65,30 @@
                 <div>
                     <h3 class="text-sm font-bold text-[var(--ui-secondary)] uppercase tracking-wider mb-3">Aktionen</h3>
                     <div class="space-y-2">
-                        <p class="text-sm text-[var(--ui-muted)]">
-                            Funktionen werden in Kürze hinzugefügt.
-                        </p>
+                        <x-ui-button variant="success" size="sm" x-data @click="$dispatch('open-modal-create-location')" class="w-full">
+                            <span class="flex items-center gap-2">
+                                @svg('heroicon-o-plus', 'w-4 h-4')
+                                Neue Location
+                            </span>
+                        </x-ui-button>
+                        <x-ui-button variant="success" size="sm" x-data @click="$dispatch('open-modal-create-standort')" class="w-full">
+                            <span class="flex items-center gap-2">
+                                @svg('heroicon-o-plus', 'w-4 h-4')
+                                Neuer Standort
+                            </span>
+                        </x-ui-button>
+                        <x-ui-button variant="secondary-outline" size="sm" :href="route('location.locations.index')" wire:navigate class="w-full">
+                            <span class="flex items-center gap-2">
+                                @svg('heroicon-o-map-pin', 'w-4 h-4')
+                                Locations
+                            </span>
+                        </x-ui-button>
+                        <x-ui-button variant="secondary-outline" size="sm" :href="route('location.standorte.index')" wire:navigate class="w-full">
+                            <span class="flex items-center gap-2">
+                                @svg('heroicon-o-globe-alt', 'w-4 h-4')
+                                Standorte
+                            </span>
+                        </x-ui-button>
                     </div>
                 </div>
 
@@ -79,9 +100,42 @@
                             <div class="text-xs text-[var(--ui-muted)]">Standorte</div>
                             <div class="text-lg font-bold text-[var(--ui-secondary)]">0</div>
                         </div>
+                        <div class="p-3 bg-[var(--ui-muted-5)] rounded-lg border border-[var(--ui-border)]/40">
+                            <div class="text-xs text-[var(--ui-muted)]">Locations</div>
+                            <div class="text-lg font-bold text-[var(--ui-secondary)]">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Recent Activity --}}
+                <div>
+                    <h3 class="text-sm font-bold text-[var(--ui-secondary)] uppercase tracking-wider mb-3">Letzte Aktivitäten</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="p-2 rounded border border-[var(--ui-border)]/60 bg-[var(--ui-muted-5)]">
+                            <div class="font-medium text-[var(--ui-secondary)] truncate">Dashboard geladen</div>
+                            <div class="text-[var(--ui-muted)] text-xs">vor 1 Minute</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </x-ui-page-sidebar>
     </x-slot>
+
+    <x-slot name="activity">
+        <x-ui-page-sidebar title="Aktivitäten" width="w-80" :defaultOpen="false" storeKey="activityOpen" side="right">
+            <div class="p-4 space-y-4">
+                <div class="text-sm text-[var(--ui-muted)]">Letzte Aktivitäten</div>
+                <div class="space-y-3 text-sm">
+                    <div class="p-2 rounded border border-[var(--ui-border)]/60 bg-[var(--ui-muted-5)]">
+                        <div class="font-medium text-[var(--ui-secondary)] truncate">Dashboard geladen</div>
+                        <div class="text-[var(--ui-muted)]">vor 1 Minute</div>
+                    </div>
+                </div>
+            </div>
+        </x-ui-page-sidebar>
+    </x-slot>
+
+    {{-- Modals innerhalb des Page-Roots halten (ein Root-Element) --}}
+    <livewire:location.create-location-modal />
+    <livewire:location.create-standort-modal />
 </x-ui-page>
