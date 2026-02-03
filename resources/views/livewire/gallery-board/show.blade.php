@@ -79,7 +79,7 @@
                                 this.dragging = null;
                             }
                         }"
-                        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
+                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
                     >
                         <template x-for="(item, index) in items" :key="item.id">
                             <div
@@ -134,7 +134,7 @@
                                 {{-- Delete button --}}
                                 <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button
-                                        @click.prevent="$wire.deleteItem(item.id)"
+                                        @click.stop.prevent="$wire.deleteItem(item.id)"
                                         class="w-6 h-6 rounded bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors"
                                         title="Entfernen"
                                     >
