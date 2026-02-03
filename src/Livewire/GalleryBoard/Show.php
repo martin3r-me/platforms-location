@@ -20,10 +20,10 @@ class Show extends Component
 
     public function rendered(): void
     {
-        // Kontext setzen für ModalFiles
+        // Kontext vom Model holen (nutzt Location statt GalleryBoard)
         $this->dispatch('files', [
-            'context_type' => get_class($this->galleryBoard),
-            'context_id' => $this->galleryBoard->id,
+            'context_type' => $this->galleryBoard->getFileContextType(),
+            'context_id' => $this->galleryBoard->getFileContextId(),
         ]);
     }
 

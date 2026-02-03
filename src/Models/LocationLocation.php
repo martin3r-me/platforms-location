@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Platform\ActivityLog\Traits\LogsActivity;
+use Platform\Core\Contracts\HasFileContext;
 use Symfony\Component\Uid\UuidV7;
 
 /**
  * Location - Simple child entity belonging to a Site
  * Has Content Boards and Gallery Boards.
  */
-class LocationLocation extends Model
+class LocationLocation extends Model implements HasFileContext
 {
     use LogsActivity, SoftDeletes;
 
@@ -116,5 +117,21 @@ class LocationLocation extends Model
     public function scopeNotDone($query)
     {
         return $query->where('done', false);
+    }
+
+    /**
+     * Der Kontext-Typ für Dateien (zeigt auf sich selbst)
+     */
+    public function getFileContextType(): string
+    {
+        return self::class;
+    }
+
+    /**
+     * Die Kontext-ID für Dateien
+     */
+    public function getFileContextId(): int
+    {
+        return $this->id;
     }
 }

@@ -5,13 +5,14 @@ namespace Platform\Location\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Platform\Core\Contracts\HasFileContext;
 use Platform\Core\Traits\HasContextFileReferences;
 use Symfony\Component\Uid\UuidV7;
 
 /**
  * Gallery Board - Bildergalerie für eine Location
  */
-class LocationGalleryBoard extends Model
+class LocationGalleryBoard extends Model implements HasFileContext
 {
     use HasContextFileReferences;
 
@@ -82,5 +83,21 @@ class LocationGalleryBoard extends Model
     public function items(): HasMany
     {
         return $this->hasMany(LocationGalleryBoardItem::class, 'gallery_board_id')->orderBy('order');
+    }
+
+    /**
+     * Der Kontext-Typ für Dateien (nutzt Location statt GalleryBoard)
+     */
+    public function getFileContextType(): string
+    {
+        return LocationLocation::class;
+    }
+
+    /**
+     * Die Kontext-ID für Dateien
+     */
+    public function getFileContextId(): int
+    {
+        return $this->location_id;
     }
 }
