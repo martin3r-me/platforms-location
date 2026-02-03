@@ -32,29 +32,58 @@ class Show extends Component
         $this->items = $this->galleryBoard->getFileReferencesArray();
     }
 
+    /**
+     * Leere Referenz-Hülle erstellen (öffnet NICHT das Modal)
+     */
+    public function addEmptyItem(): void
+    {
+        $this->galleryBoard->addEmptyFileReference([
+            'title' => 'Neues Bild',
+        ]);
+
+        $this->loadItems();
+    }
+
+    /**
+     * Klick auf Placeholder → Modal zum Zuweisen öffnen
+     */
+    public function assignFile(int $referenceId): void
+    {
+        $this->dispatch('files:assign', [
+            'reference_id' => $referenceId,
+        ]);
+    }
+
     public function openFilePicker(): void
     {
+        // Modal übernimmt alles: Varianten-Auswahl + Referenz-Erstellung
         $this->dispatch('files:picker', [
-            'callback' => 'addSelectedFiles',
+            'reference_type' => LocationGalleryBoard::class,
+            'reference_id' => $this->galleryBoard->id,
             'multiple' => true,
         ]);
     }
 
-    #[On('files:selected')]
-    public function handleFilesSelected(array $payload): void
+    #[On('files:reference-created')]
+    #[On('files:reference-deleted')]
+    public function handleReferenceChanged(array $payload): void
     {
-        if (($payload['callback'] ?? null) !== 'addSelectedFiles') {
+        // Nur prüfen ob es uns betrifft
+        if (($payload['reference_type'] ?? null) !== LocationGalleryBoard::class) {
+            return;
+        }
+        if (($payload['reference_id'] ?? null) !== $this->galleryBoard->id) {
             return;
         }
 
-        foreach ($payload['files'] as $file) {
-            $this->galleryBoard->addFileReference($file['id'], [
-                'title' => $file['original_name'],
-            ]);
-        }
-
+        // Einfach neu laden!
         $this->loadItems();
-        $this->dispatch('notify', ['type' => 'success', 'message' => count($payload['files']) . ' Bild(er) hinzugefügt']);
+    }
+
+    #[On('files:reference-updated')]
+    public function handleReferenceUpdated(array $payload): void
+    {
+        $this->loadItems();
     }
 
     public function updateItemOrder(array $orderedIds): void

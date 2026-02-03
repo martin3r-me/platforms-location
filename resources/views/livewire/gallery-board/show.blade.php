@@ -28,10 +28,10 @@
                     @endif
                 </div>
                 <div class="flex items-center gap-2">
-                    <x-ui-button variant="primary" size="sm" wire:click="openFilePicker">
+                    <x-ui-button variant="primary" size="sm" wire:click="addEmptyItem">
                         <span class="inline-flex items-center gap-2">
                             @svg('heroicon-o-plus', 'w-4 h-4')
-                            <span>Bilder hinzufuegen</span>
+                            <span>Bild hinzufuegen</span>
                         </span>
                     </x-ui-button>
                     <x-ui-button variant="secondary-outline" size="sm" :href="route('location.locations.show', $galleryBoard->location)" wire:navigate>
@@ -90,8 +90,19 @@
                                 class="relative group rounded-lg border border-[var(--ui-border)]/60 overflow-hidden bg-white cursor-move transition-all hover:shadow-md"
                                 :class="{ 'opacity-50 scale-95': dragging === index }"
                             >
-                                {{-- Image --}}
-                                <template x-if="item.thumbnail">
+                                {{-- Placeholder für leere Referenzen --}}
+                                <template x-if="!item.context_file_id">
+                                    <div
+                                        @click.prevent="$wire.assignFile(item.id)"
+                                        class="w-full aspect-square bg-[var(--ui-muted-5)] flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--ui-primary-5)] transition-colors border-2 border-dashed border-[var(--ui-border)]"
+                                    >
+                                        @svg('heroicon-o-plus', 'w-8 h-8 text-[var(--ui-muted)]')
+                                        <span class="text-xs text-[var(--ui-muted)] mt-2">Bild zuweisen</span>
+                                    </div>
+                                </template>
+
+                                {{-- Image (wenn context_file_id vorhanden) --}}
+                                <template x-if="item.context_file_id && item.thumbnail">
                                     <a :href="item.url" target="_blank" class="block">
                                         <img
                                             :src="item.thumbnail"
@@ -100,16 +111,18 @@
                                         />
                                     </a>
                                 </template>
-                                <template x-if="!item.thumbnail">
+                                <template x-if="item.context_file_id && !item.thumbnail">
                                     <div class="w-full aspect-square bg-[var(--ui-muted-5)] flex items-center justify-center">
                                         @svg('heroicon-o-photo', 'w-12 h-12 text-[var(--ui-muted)]/50')
                                     </div>
                                 </template>
 
-                                {{-- Overlay with title --}}
-                                <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-3">
-                                    <p class="text-xs text-white truncate font-medium" x-text="item.title"></p>
-                                </div>
+                                {{-- Overlay with title (nur bei zugewiesenem Bild) --}}
+                                <template x-if="item.context_file_id">
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-3">
+                                        <p class="text-xs text-white truncate font-medium" x-text="item.title"></p>
+                                    </div>
+                                </template>
 
                                 {{-- Drag handle indicator --}}
                                 <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -141,10 +154,10 @@
                         <div class="flex flex-col items-center gap-3">
                             @svg('heroicon-o-photo', 'w-12 h-12 text-green-300')
                             <p class="text-lg font-medium text-[var(--ui-secondary)]">Noch keine Bilder</p>
-                            <p>Klicken Sie auf "Bilder hinzufuegen" um Bilder zur Galerie hinzuzufuegen.</p>
-                            <x-ui-button variant="primary" size="sm" wire:click="openFilePicker" class="mt-2">
+                            <p>Klicken Sie auf "Bild hinzufuegen" um ein neues Bild zur Galerie hinzuzufuegen.</p>
+                            <x-ui-button variant="primary" size="sm" wire:click="addEmptyItem" class="mt-2">
                                 @svg('heroicon-o-plus', 'w-4 h-4 mr-1')
-                                Bilder hinzufuegen
+                                Bild hinzufuegen
                             </x-ui-button>
                         </div>
                     </div>
@@ -160,10 +173,10 @@
                 <div>
                     <h3 class="text-sm font-bold text-[var(--ui-secondary)] uppercase tracking-wider mb-3">Aktionen</h3>
                     <div class="space-y-2">
-                        <x-ui-button variant="primary" size="sm" wire:click="openFilePicker" class="w-full">
+                        <x-ui-button variant="primary" size="sm" wire:click="addEmptyItem" class="w-full">
                             <span class="flex items-center gap-2">
                                 @svg('heroicon-o-plus', 'w-4 h-4')
-                                Bilder hinzufuegen
+                                Bild hinzufuegen
                             </span>
                         </x-ui-button>
                         <x-ui-button variant="secondary-outline" size="sm" wire:click="$dispatch('files:open')" class="w-full">
