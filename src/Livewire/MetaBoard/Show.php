@@ -5,7 +5,6 @@ namespace Platform\Location\Livewire\MetaBoard;
 use Livewire\Component;
 use Platform\Location\Models\LocationMetaBoard;
 use Platform\Location\Models\LocationOccasion;
-use Platform\Location\Models\LocationPricing;
 use Platform\Location\Models\LocationSeating;
 
 class Show extends Component
@@ -29,17 +28,12 @@ class Show extends Component
     public array $selectedSeatingIds = [];
     public array $seatingMaxPax = [];
 
-    // Pricing Board
-    public $selectedPricingId = null;
-    public array $availablePricings = [];
-
     public function mount(LocationMetaBoard $metaBoard)
     {
         $this->metaBoard = $metaBoard;
         $this->fillFromModel();
         $this->loadOccasions();
         $this->loadSeatings();
-        $this->loadPricings();
     }
 
     protected function fillFromModel(): void
@@ -52,7 +46,6 @@ class Show extends Component
         $this->personenauslastung_max = $this->metaBoard->personenauslastung_max;
         $this->besonderheit = $this->metaBoard->besonderheit ?? '';
         $this->barrierefreiheit = $this->metaBoard->barrierefreiheit ?? false;
-        $this->selectedPricingId = $this->metaBoard->pricing_id;
         $this->selectedOccasionIds = $this->metaBoard->occasions()->pluck('location_occasions.id')->toArray();
 
         $this->selectedSeatingIds = $this->metaBoard->seatings()->pluck('location_seatings.id')->toArray();
@@ -121,24 +114,6 @@ class Show extends Component
         $this->metaBoard->seatings()->updateExistingPivot($seatingId, ['max_pax' => $maxPax]);
     }
 
-    public function loadPricings(): void
-    {
-        $this->availablePricings = LocationPricing::where('location_id', $this->metaBoard->location_id)
-            ->active()
-            ->orderBy('order')
-            ->get()
-            ->toArray();
-    }
-
-    public function updatePricing($pricingId): void
-    {
-        $pricingId = ($pricingId === '' || $pricingId === null || $pricingId === 'null') ? null : (int) $pricingId;
-
-        $this->selectedPricingId = $pricingId;
-        $this->metaBoard->update(['pricing_id' => $pricingId]);
-        $this->metaBoard->refresh();
-    }
-
     public function updateField($field, $value): void
     {
         $allowed = [
@@ -171,7 +146,6 @@ class Show extends Component
             'personenauslastung_max' => $this->personenauslastung_max ?: null,
             'besonderheit' => $this->besonderheit ?: null,
             'barrierefreiheit' => $this->barrierefreiheit,
-            'pricing_id' => $this->selectedPricingId,
         ]);
 
         $this->metaBoard->occasions()->sync($this->selectedOccasionIds);

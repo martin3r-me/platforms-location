@@ -49,10 +49,6 @@
             @svg('heroicon-o-square-3-stack-3d', 'w-4 h-4 text-[var(--ui-secondary)]')
             <span class="ml-2 text-sm">Bestuhlungen</span>
         </x-ui-sidebar-item>
-        <x-ui-sidebar-item :href="route('location.settings.pricings.index')">
-            @svg('heroicon-o-banknotes', 'w-4 h-4 text-[var(--ui-secondary)]')
-            <span class="ml-2 text-sm">Mietpreise</span>
-        </x-ui-sidebar-item>
     </x-ui-sidebar-list>
 
     {{-- Collapsed: Icons-only für Settings --}}
@@ -63,9 +59,6 @@
             </a>
             <a href="{{ route('location.settings.seatings.index') }}" wire:navigate class="flex items-center justify-center p-2 rounded-md text-[var(--ui-secondary)] hover:bg-[var(--ui-muted-5)]">
                 @svg('heroicon-o-square-3-stack-3d', 'w-5 h-5')
-            </a>
-            <a href="{{ route('location.settings.pricings.index') }}" wire:navigate class="flex items-center justify-center p-2 rounded-md text-[var(--ui-secondary)] hover:bg-[var(--ui-muted-5)]">
-                @svg('heroicon-o-banknotes', 'w-5 h-5')
             </a>
         </div>
     </div>

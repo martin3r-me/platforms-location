@@ -60,6 +60,39 @@
                 </div>
             </div>
 
+            {{-- Meta Boards Section --}}
+            <x-ui-panel title="Meta Boards" :subtitle="count($metaBoards) . ' Board(s)'">
+                @if($metaBoards->count() > 0)
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        @foreach($metaBoards as $board)
+                            <a href="{{ route('location.meta-boards.show', $board) }}" wire:navigate class="group block">
+                                <div class="bg-white rounded-xl border border-[var(--ui-border)] p-4 hover:shadow-md hover:border-purple-300 transition-all">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-[var(--ui-secondary)] group-hover:text-purple-600 transition-colors">{{ $board->name }}</h4>
+                                            @if($board->description)
+                                                <p class="text-sm text-[var(--ui-muted)] mt-1 line-clamp-2">{{ $board->description }}</p>
+                                            @endif
+                                        </div>
+                                        @svg('heroicon-o-clipboard-document-list', 'w-5 h-5 text-purple-600 flex-shrink-0 ml-2')
+                                    </div>
+                                    <div class="mt-3 flex items-center gap-2">
+                                        <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-50 rounded">Meta Board</span>
+                                        @if($board->done)
+                                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Erledigt</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="p-6 text-center text-[var(--ui-muted)] bg-white rounded-md border border-[var(--ui-border)]">
+                        <p>Noch keine Meta Boards vorhanden.</p>
+                    </div>
+                @endif
+            </x-ui-panel>
+
             {{-- Pricing Boards Section --}}
             <x-ui-panel title="Pricing Boards" :subtitle="count($pricingBoards) . ' Board(s)'">
                 @if($pricingBoards->count() > 0)
@@ -168,39 +201,6 @@
                     </div>
                 @endif
             </x-ui-panel>
-
-            {{-- Meta Boards Section --}}
-            <x-ui-panel title="Meta Boards" :subtitle="count($metaBoards) . ' Board(s)'">
-                @if($metaBoards->count() > 0)
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        @foreach($metaBoards as $board)
-                            <a href="{{ route('location.meta-boards.show', $board) }}" wire:navigate class="group block">
-                                <div class="bg-white rounded-xl border border-[var(--ui-border)] p-4 hover:shadow-md hover:border-purple-300 transition-all">
-                                    <div class="flex items-start justify-between">
-                                        <div class="flex-1">
-                                            <h4 class="font-semibold text-[var(--ui-secondary)] group-hover:text-purple-600 transition-colors">{{ $board->name }}</h4>
-                                            @if($board->description)
-                                                <p class="text-sm text-[var(--ui-muted)] mt-1 line-clamp-2">{{ $board->description }}</p>
-                                            @endif
-                                        </div>
-                                        @svg('heroicon-o-clipboard-document-list', 'w-5 h-5 text-purple-600 flex-shrink-0 ml-2')
-                                    </div>
-                                    <div class="mt-3 flex items-center gap-2">
-                                        <span class="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-50 rounded">Meta Board</span>
-                                        @if($board->done)
-                                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Erledigt</span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="p-6 text-center text-[var(--ui-muted)] bg-white rounded-md border border-[var(--ui-border)]">
-                        <p>Noch keine Meta Boards vorhanden.</p>
-                    </div>
-                @endif
-            </x-ui-panel>
         </div>
     </x-ui-page-container>
 
@@ -230,6 +230,10 @@
                 <div>
                     <h3 class="text-sm font-bold text-[var(--ui-secondary)] uppercase tracking-wider mb-3">Statistiken</h3>
                     <div class="space-y-3">
+                        <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                            <div class="text-xs text-purple-600">Meta Boards</div>
+                            <div class="text-lg font-bold text-purple-700">{{ count($metaBoards) }}</div>
+                        </div>
                         <div class="p-3 bg-amber-50 rounded-lg border border-amber-100">
                             <div class="text-xs text-amber-600">Pricing Boards</div>
                             <div class="text-lg font-bold text-amber-700">{{ count($pricingBoards) }}</div>
@@ -241,10 +245,6 @@
                         <div class="p-3 bg-green-50 rounded-lg border border-green-100">
                             <div class="text-xs text-green-600">Gallery Boards</div>
                             <div class="text-lg font-bold text-green-700">{{ count($galleryBoards) }}</div>
-                        </div>
-                        <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
-                            <div class="text-xs text-purple-600">Meta Boards</div>
-                            <div class="text-lg font-bold text-purple-700">{{ count($metaBoards) }}</div>
                         </div>
                     </div>
                 </div>
