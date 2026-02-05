@@ -12,6 +12,9 @@ use Platform\Location\Livewire\MetaBoard\Show as MetaBoardShow;
 use Platform\Location\Livewire\Settings\OccasionIndex;
 use Platform\Location\Livewire\Settings\OccasionCreate;
 use Platform\Location\Livewire\Settings\OccasionEdit;
+use Platform\Location\Livewire\Settings\SeatingIndex;
+use Platform\Location\Livewire\Settings\SeatingCreate;
+use Platform\Location\Livewire\Settings\SeatingEdit;
 
 Route::get('/', Dashboard::class)->name('location.dashboard');
 Route::get('/locations', LocationIndex::class)->name('location.locations.index');
@@ -26,3 +29,7 @@ Route::get('/meta-boards/{metaBoard}', MetaBoardShow::class)->name('location.met
 Route::get('/settings/occasions', OccasionIndex::class)->name('location.settings.occasions.index');
 Route::get('/settings/occasions/create', OccasionCreate::class)->name('location.settings.occasions.create');
 Route::get('/settings/occasions/{occasion}/edit', OccasionEdit::class)->name('location.settings.occasions.edit');
+
+Route::get('/settings/seatings', SeatingIndex::class)->name('location.settings.seatings.index');
+Route::get('/settings/seatings/create', SeatingCreate::class)->name('location.settings.seatings.create');
+Route::get('/settings/seatings/{seating}/edit', SeatingEdit::class)->name('location.settings.seatings.edit');

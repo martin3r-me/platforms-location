@@ -100,4 +100,17 @@ class LocationMetaBoard extends Model
             'occasion_id'
         )->withTimestamps();
     }
+
+    /**
+     * Bestuhlungen (n:m ueber Pivot-Tabelle mit max_pax)
+     */
+    public function seatings(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            LocationSeating::class,
+            'location_meta_board_seating',
+            'meta_board_id',
+            'seating_id'
+        )->withPivot('max_pax')->withTimestamps();
+    }
 }

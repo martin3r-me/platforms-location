@@ -47,6 +47,11 @@ return [
                     'route' => 'location.settings.occasions.index',
                     'icon'  => 'heroicon-o-calendar-days',
                 ],
+                [
+                    'label' => 'Bestuhlungen',
+                    'route' => 'location.settings.seatings.index',
+                    'icon'  => 'heroicon-o-square-3-stack-3d',
+                ],
             ],
         ],
     ],

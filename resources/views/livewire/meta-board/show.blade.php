@@ -173,6 +173,50 @@
                     @endif
                 </div>
             </x-ui-panel>
+
+            {{-- Bestuhlungen --}}
+            <x-ui-panel title="Bestuhlungen" :subtitle="count($selectedSeatingIds) . ' ausgewaehlt'">
+                <div class="p-4">
+                    @if(count($seatings) > 0)
+                        <div class="space-y-3">
+                            @foreach($seatings as $seating)
+                                <div class="flex items-center gap-4 p-3 rounded-lg border transition-all
+                                    {{ in_array($seating['id'], $selectedSeatingIds) ? 'border-blue-300 bg-blue-50' : 'border-[var(--ui-border)] hover:border-blue-200 hover:bg-blue-50/50' }}">
+                                    <label class="flex items-center gap-3 cursor-pointer flex-shrink-0">
+                                        <input type="checkbox"
+                                            wire:click="toggleSeating({{ $seating['id'] }})"
+                                            {{ in_array($seating['id'], $selectedSeatingIds) ? 'checked' : '' }}
+                                            class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                                        <div>
+                                            <div class="text-sm font-medium text-[var(--ui-secondary)]">{{ $seating['name'] }}</div>
+                                            @if(!empty($seating['description']))
+                                                <div class="text-xs text-[var(--ui-muted)]">{{ $seating['description'] }}</div>
+                                            @endif
+                                        </div>
+                                    </label>
+                                    @if(in_array($seating['id'], $selectedSeatingIds))
+                                        <div class="flex items-center gap-2 ml-auto flex-shrink-0">
+                                            <label class="text-xs text-[var(--ui-muted)] whitespace-nowrap">Max. PAX</label>
+                                            <input type="number" step="1" min="0"
+                                                wire:change="updateSeatingMaxPax({{ $seating['id'] }}, $event.target.value)"
+                                                value="{{ $seatingMaxPax[$seating['id']] ?? '' }}"
+                                                class="w-24 px-2 py-1 border border-[var(--ui-border)] rounded text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                                                placeholder="0" />
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center text-[var(--ui-muted)] py-4">
+                            <p>Keine Bestuhlungen vorhanden.</p>
+                            <a href="{{ route('location.settings.seatings.index') }}" wire:navigate class="text-sm text-[var(--ui-primary)] hover:underline mt-1 inline-block">
+                                Bestuhlungen verwalten
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </x-ui-panel>
         </div>
     </x-ui-page-container>
 
@@ -209,6 +253,10 @@
                         <div class="p-3 bg-[var(--ui-muted-5)] rounded-lg border border-[var(--ui-border)]/40">
                             <div class="text-xs text-[var(--ui-muted)]">Anlaesse</div>
                             <div class="text-sm font-medium text-[var(--ui-secondary)]">{{ count($selectedOccasionIds) }}</div>
+                        </div>
+                        <div class="p-3 bg-[var(--ui-muted-5)] rounded-lg border border-[var(--ui-border)]/40">
+                            <div class="text-xs text-[var(--ui-muted)]">Bestuhlungen</div>
+                            <div class="text-sm font-medium text-[var(--ui-secondary)]">{{ count($selectedSeatingIds) }}</div>
                         </div>
                         <div class="p-3 bg-[var(--ui-muted-5)] rounded-lg border border-[var(--ui-border)]/40">
                             <div class="text-xs text-[var(--ui-muted)]">Erstellt am</div>
