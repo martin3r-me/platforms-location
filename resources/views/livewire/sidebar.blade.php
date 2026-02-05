@@ -43,7 +43,7 @@
     <x-ui-sidebar-list label="Settings">
         <x-ui-sidebar-item :href="route('location.settings.occasions.index')">
             @svg('heroicon-o-calendar-days', 'w-4 h-4 text-[var(--ui-secondary)]')
-            <span class="ml-2 text-sm">Occasions</span>
+            <span class="ml-2 text-sm">Anlässe</span>
         </x-ui-sidebar-item>
     </x-ui-sidebar-list>
 
