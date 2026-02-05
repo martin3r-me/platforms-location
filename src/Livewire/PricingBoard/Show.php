@@ -15,6 +15,8 @@ class Show extends Component
     public $mietpreis_aufbautag = null;
     public $mietpreis_abbautag = null;
     public $mietpreis_va_tag = null;
+    public $energiekosten_pro_tag = null;
+    public ?string $preisanmerkungen = '';
     public ?string $valid_from = '';
     public ?string $valid_to = '';
 
@@ -31,6 +33,8 @@ class Show extends Component
         $this->mietpreis_aufbautag = $this->pricingBoard->mietpreis_aufbautag;
         $this->mietpreis_abbautag = $this->pricingBoard->mietpreis_abbautag;
         $this->mietpreis_va_tag = $this->pricingBoard->mietpreis_va_tag;
+        $this->energiekosten_pro_tag = $this->pricingBoard->energiekosten_pro_tag;
+        $this->preisanmerkungen = $this->pricingBoard->preisanmerkungen ?? '';
         $this->valid_from = $this->pricingBoard->valid_from?->format('Y-m-d') ?? '';
         $this->valid_to = $this->pricingBoard->valid_to?->format('Y-m-d') ?? '';
     }
@@ -39,7 +43,8 @@ class Show extends Component
     {
         $allowed = [
             'name', 'description', 'mietpreis_aufbautag',
-            'mietpreis_abbautag', 'mietpreis_va_tag', 'valid_from', 'valid_to',
+            'mietpreis_abbautag', 'mietpreis_va_tag', 'energiekosten_pro_tag',
+            'preisanmerkungen', 'valid_from', 'valid_to',
         ];
 
         if (!in_array($field, $allowed)) {
@@ -47,7 +52,7 @@ class Show extends Component
         }
 
         // Convert empty strings to null for nullable fields
-        $numericFields = ['mietpreis_aufbautag', 'mietpreis_abbautag', 'mietpreis_va_tag'];
+        $numericFields = ['mietpreis_aufbautag', 'mietpreis_abbautag', 'mietpreis_va_tag', 'energiekosten_pro_tag'];
         if (in_array($field, $numericFields) && ($value === '' || $value === null)) {
             $value = null;
         }
@@ -69,6 +74,8 @@ class Show extends Component
             'mietpreis_aufbautag' => $this->mietpreis_aufbautag ?: null,
             'mietpreis_abbautag' => $this->mietpreis_abbautag ?: null,
             'mietpreis_va_tag' => $this->mietpreis_va_tag ?: null,
+            'energiekosten_pro_tag' => $this->energiekosten_pro_tag ?: null,
+            'preisanmerkungen' => $this->preisanmerkungen ?: null,
             'valid_from' => $this->valid_from ?: null,
             'valid_to' => $this->valid_to ?: null,
         ]);

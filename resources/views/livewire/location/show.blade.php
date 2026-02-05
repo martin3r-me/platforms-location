@@ -115,13 +115,16 @@
                                             <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Erledigt</span>
                                         @endif
                                     </div>
-                                    @if($board->mietpreis_aufbautag || $board->mietpreis_abbautag || $board->mietpreis_va_tag)
+                                    @if($board->mietpreis_aufbautag || $board->mietpreis_abbautag || $board->mietpreis_va_tag || $board->energiekosten_pro_tag)
                                         <div class="mt-2 flex items-center gap-3 text-xs text-[var(--ui-muted)]">
                                             @if($board->mietpreis_aufbautag)
                                                 <span>Aufbau: {{ number_format($board->mietpreis_aufbautag, 2, ',', '.') }}</span>
                                             @endif
                                             @if($board->mietpreis_va_tag)
                                                 <span>VA: {{ number_format($board->mietpreis_va_tag, 2, ',', '.') }}</span>
+                                            @endif
+                                            @if($board->energiekosten_pro_tag)
+                                                <span>Energie/Tag: {{ number_format($board->energiekosten_pro_tag, 2, ',', '.') }}</span>
                                             @endif
                                         </div>
                                     @endif

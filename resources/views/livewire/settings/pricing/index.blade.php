@@ -44,7 +44,13 @@
                                         @if($pricing->mietpreis_va_tag)
                                             <span>VA-Tag: {{ number_format($pricing->mietpreis_va_tag, 2, ',', '.') }} EUR</span>
                                         @endif
+                                        @if($pricing->energiekosten_pro_tag)
+                                            <span>Energie/Tag: {{ number_format($pricing->energiekosten_pro_tag, 2, ',', '.') }} EUR</span>
+                                        @endif
                                     </div>
+                                    @if($pricing->preisanmerkungen)
+                                        <p class="text-xs text-[var(--ui-muted)] mt-1 italic">{{ $pricing->preisanmerkungen }}</p>
+                                    @endif
                                     <div class="mt-1 flex items-center gap-4 text-xs text-[var(--ui-muted)]">
                                         @if($pricing->valid_from || $pricing->valid_to)
                                             <span>

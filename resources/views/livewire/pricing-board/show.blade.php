@@ -75,7 +75,7 @@
             {{-- Mietpreise --}}
             <x-ui-panel title="Mietpreise">
                 <div class="p-4 space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-[var(--ui-secondary)] mb-1">Mietpreis Aufbautag</label>
                             <input type="number" step="0.01" wire:model.blur="mietpreis_aufbautag" wire:change="updateField('mietpreis_aufbautag', $event.target.value)"
@@ -94,6 +94,19 @@
                                 class="w-full px-3 py-2 border border-[var(--ui-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
                                 placeholder="0.00" />
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium text-[var(--ui-secondary)] mb-1">Energiekosten / Tag</label>
+                            <input type="number" step="0.01" wire:model.blur="energiekosten_pro_tag" wire:change="updateField('energiekosten_pro_tag', $event.target.value)"
+                                class="w-full px-3 py-2 border border-[var(--ui-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                                placeholder="0.00" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-[var(--ui-secondary)] mb-1">Anmerkungen zu den Preisen</label>
+                        <textarea wire:model.blur="preisanmerkungen" wire:change="updateField('preisanmerkungen', $event.target.value)"
+                            rows="3"
+                            class="w-full px-3 py-2 border border-[var(--ui-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                            placeholder="Optionale Anmerkungen zu den Preisen..."></textarea>
                     </div>
                 </div>
             </x-ui-panel>
