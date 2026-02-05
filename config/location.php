@@ -39,5 +39,15 @@ return [
                 ],
             ],
         ],
+        [
+            'group' => 'Settings',
+            'items' => [
+                [
+                    'label' => 'Occasions',
+                    'route' => 'location.settings.occasions.index',
+                    'icon'  => 'heroicon-o-calendar-days',
+                ],
+            ],
+        ],
     ],
 ];
