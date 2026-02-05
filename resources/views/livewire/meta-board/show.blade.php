@@ -81,10 +81,10 @@
                 </div>
             </x-ui-panel>
 
-            {{-- Flaeche & Preise --}}
-            <x-ui-panel title="Flaeche & Mietpreise">
+            {{-- Flaeche & Pricing Board --}}
+            <x-ui-panel title="Flaeche & Pricing Board">
                 <div class="p-4 space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-[var(--ui-secondary)] mb-1">Flaeche (m²)</label>
                             <input type="number" step="0.01" wire:model.blur="flaeche_m2" wire:change="updateField('flaeche_m2', $event.target.value)"
@@ -92,24 +92,57 @@
                                 placeholder="0.00" />
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-[var(--ui-secondary)] mb-1">Mietpreis Aufbautag</label>
-                            <input type="number" step="0.01" wire:model.blur="mietpreis_aufbautag" wire:change="updateField('mietpreis_aufbautag', $event.target.value)"
-                                class="w-full px-3 py-2 border border-[var(--ui-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ui-primary)]/20 focus:border-[var(--ui-primary)]"
-                                placeholder="0.00" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--ui-secondary)] mb-1">Mietpreis Abbautag</label>
-                            <input type="number" step="0.01" wire:model.blur="mietpreis_abbautag" wire:change="updateField('mietpreis_abbautag', $event.target.value)"
-                                class="w-full px-3 py-2 border border-[var(--ui-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ui-primary)]/20 focus:border-[var(--ui-primary)]"
-                                placeholder="0.00" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--ui-secondary)] mb-1">Mietpreis VA-Tag</label>
-                            <input type="number" step="0.01" wire:model.blur="mietpreis_va_tag" wire:change="updateField('mietpreis_va_tag', $event.target.value)"
-                                class="w-full px-3 py-2 border border-[var(--ui-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ui-primary)]/20 focus:border-[var(--ui-primary)]"
-                                placeholder="0.00" />
+                            <label class="block text-sm font-medium text-[var(--ui-secondary)] mb-1">Pricing Board</label>
+                            <select wire:change="updatePricing($event.target.value)"
+                                class="w-full px-3 py-2 border border-[var(--ui-border)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ui-primary)]/20 focus:border-[var(--ui-primary)]">
+                                <option value="null">– Kein Pricing Board –</option>
+                                @foreach($availablePricings as $pricing)
+                                    <option value="{{ $pricing['id'] }}" {{ $selectedPricingId == $pricing['id'] ? 'selected' : '' }}>
+                                        {{ $pricing['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
+
+                    {{-- Readonly Preisanzeige wenn Pricing Board verknuepft --}}
+                    @if($selectedPricingId && $metaBoard->pricing)
+                        <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-sm font-medium text-amber-800">Verknuepftes Pricing Board: {{ $metaBoard->pricing->name }}</h4>
+                                <a href="{{ route('location.pricing-boards.show', $metaBoard->pricing) }}" wire:navigate
+                                    class="text-xs text-amber-700 hover:text-amber-900 underline">
+                                    Pricing Board oeffnen
+                                </a>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <div class="text-xs text-amber-600">Mietpreis Aufbautag</div>
+                                    <div class="text-sm font-medium text-amber-800">
+                                        {{ $metaBoard->pricing->mietpreis_aufbautag ? number_format($metaBoard->pricing->mietpreis_aufbautag, 2, ',', '.') . ' EUR' : '–' }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-amber-600">Mietpreis Abbautag</div>
+                                    <div class="text-sm font-medium text-amber-800">
+                                        {{ $metaBoard->pricing->mietpreis_abbautag ? number_format($metaBoard->pricing->mietpreis_abbautag, 2, ',', '.') . ' EUR' : '–' }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-amber-600">Mietpreis VA-Tag</div>
+                                    <div class="text-sm font-medium text-amber-800">
+                                        {{ $metaBoard->pricing->mietpreis_va_tag ? number_format($metaBoard->pricing->mietpreis_va_tag, 2, ',', '.') . ' EUR' : '–' }}
+                                    </div>
+                                </div>
+                            </div>
+                            @if($metaBoard->pricing->valid_from || $metaBoard->pricing->valid_to)
+                                <div class="mt-2 text-xs text-amber-600">
+                                    Gueltigkeit: {{ $metaBoard->pricing->valid_from ? $metaBoard->pricing->valid_from->format('d.m.Y') : '–' }}
+                                    – {{ $metaBoard->pricing->valid_to ? $metaBoard->pricing->valid_to->format('d.m.Y') : 'unbegrenzt' }}
+                                </div>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             </x-ui-panel>
 

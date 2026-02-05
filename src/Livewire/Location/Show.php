@@ -8,6 +8,7 @@ use Platform\Location\Models\LocationLocation;
 use Platform\Location\Models\LocationContentBoard;
 use Platform\Location\Models\LocationGalleryBoard;
 use Platform\Location\Models\LocationMetaBoard;
+use Platform\Location\Models\LocationPricing;
 
 class Show extends Component
 {
@@ -63,16 +64,33 @@ class Show extends Component
         return redirect()->route('location.meta-boards.show', $board);
     }
 
+    public function createPricingBoard()
+    {
+        $user = Auth::user();
+        $team = $user->currentTeam;
+
+        $board = LocationPricing::create([
+            'location_id' => $this->location->id,
+            'name' => 'Neues Pricing Board',
+            'user_id' => $user->id,
+            'team_id' => $team->id,
+        ]);
+
+        return redirect()->route('location.pricing-boards.show', $board);
+    }
+
     public function render()
     {
         $contentBoards = $this->location->contentBoards()->get();
         $galleryBoards = $this->location->galleryBoards()->get();
         $metaBoards = $this->location->metaBoards()->get();
+        $pricingBoards = $this->location->pricingBoards()->get();
 
         return view('location::livewire.location.show', [
             'contentBoards' => $contentBoards,
             'galleryBoards' => $galleryBoards,
             'metaBoards' => $metaBoards,
+            'pricingBoards' => $pricingBoards,
         ])->layout('platform::layouts.app');
     }
 }

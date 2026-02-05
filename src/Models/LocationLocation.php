@@ -105,6 +105,14 @@ class LocationLocation extends Model implements HasFileContext
     }
 
     /**
+     * Pricing Boards of this location
+     */
+    public function pricingBoards(): HasMany
+    {
+        return $this->hasMany(LocationPricing::class, 'location_id')->orderBy('order');
+    }
+
+    /**
      * Scopes
      */
     public function scopeForTeam($query, $teamId)

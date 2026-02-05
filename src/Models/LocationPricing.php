@@ -3,17 +3,20 @@
 namespace Platform\Location\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Symfony\Component\Uid\UuidV7;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Platform\ActivityLog\Traits\LogsActivity;
+use Symfony\Component\Uid\UuidV7;
 
 /**
- * Meta Board - Metadaten-Board fuer eine Location
+ * Pricing Board - Mietpreise fuer eine Location
  */
-class LocationMetaBoard extends Model
+class LocationPricing extends Model
 {
-    protected $table = 'location_meta_boards';
+    use LogsActivity, SoftDeletes;
+
+    protected $table = 'location_pricings';
 
     protected $fillable = [
         'uuid',
@@ -21,24 +24,26 @@ class LocationMetaBoard extends Model
         'name',
         'description',
         'order',
-        'flaeche_m2',
-        'adresse',
-        'hallennummer',
-        'personenauslastung_max',
-        'besonderheit',
-        'barrierefreiheit',
-        'pricing_id',
-        'user_id',
-        'team_id',
+        'mietpreis_aufbautag',
+        'mietpreis_abbautag',
+        'mietpreis_va_tag',
+        'valid_from',
+        'valid_to',
+        'is_active',
         'done',
         'done_at',
+        'user_id',
+        'team_id',
     ];
 
     protected $casts = [
         'uuid' => 'string',
-        'flaeche_m2' => 'decimal:2',
-        'personenauslastung_max' => 'integer',
-        'barrierefreiheit' => 'boolean',
+        'mietpreis_aufbautag' => 'decimal:2',
+        'mietpreis_abbautag' => 'decimal:2',
+        'mietpreis_va_tag' => 'decimal:2',
+        'valid_from' => 'date',
+        'valid_to' => 'date',
+        'is_active' => 'boolean',
         'done' => 'boolean',
         'done_at' => 'datetime',
     ];
@@ -85,36 +90,23 @@ class LocationMetaBoard extends Model
     }
 
     /**
-     * Pricing Board
+     * Meta Boards die dieses Pricing Board verwenden
      */
-    public function pricing(): BelongsTo
+    public function metaBoards(): HasMany
     {
-        return $this->belongsTo(LocationPricing::class, 'pricing_id');
+        return $this->hasMany(LocationMetaBoard::class, 'pricing_id');
     }
 
     /**
-     * Anlaesse (n:m ueber Pivot-Tabelle)
+     * Scopes
      */
-    public function occasions(): BelongsToMany
+    public function scopeForTeam($query, $teamId)
     {
-        return $this->belongsToMany(
-            LocationOccasion::class,
-            'location_meta_board_occasion',
-            'meta_board_id',
-            'occasion_id'
-        )->withTimestamps();
+        return $query->where('team_id', $teamId);
     }
 
-    /**
-     * Bestuhlungen (n:m ueber Pivot-Tabelle mit max_pax)
-     */
-    public function seatings(): BelongsToMany
+    public function scopeActive($query)
     {
-        return $this->belongsToMany(
-            LocationSeating::class,
-            'location_meta_board_seating',
-            'meta_board_id',
-            'seating_id'
-        )->withPivot('max_pax')->withTimestamps();
+        return $query->where('is_active', true);
     }
 }

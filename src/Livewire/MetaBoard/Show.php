@@ -5,6 +5,7 @@ namespace Platform\Location\Livewire\MetaBoard;
 use Livewire\Component;
 use Platform\Location\Models\LocationMetaBoard;
 use Platform\Location\Models\LocationOccasion;
+use Platform\Location\Models\LocationPricing;
 use Platform\Location\Models\LocationSeating;
 
 class Show extends Component
@@ -15,9 +16,6 @@ class Show extends Component
     public ?string $name = '';
     public ?string $description = '';
     public $flaeche_m2 = null;
-    public $mietpreis_aufbautag = null;
-    public $mietpreis_abbautag = null;
-    public $mietpreis_va_tag = null;
     public ?string $adresse = '';
     public ?string $hallennummer = '';
     public $personenauslastung_max = null;
@@ -31,12 +29,17 @@ class Show extends Component
     public array $selectedSeatingIds = [];
     public array $seatingMaxPax = [];
 
+    // Pricing Board
+    public $selectedPricingId = null;
+    public array $availablePricings = [];
+
     public function mount(LocationMetaBoard $metaBoard)
     {
         $this->metaBoard = $metaBoard;
         $this->fillFromModel();
         $this->loadOccasions();
         $this->loadSeatings();
+        $this->loadPricings();
     }
 
     protected function fillFromModel(): void
@@ -44,14 +47,12 @@ class Show extends Component
         $this->name = $this->metaBoard->name;
         $this->description = $this->metaBoard->description ?? '';
         $this->flaeche_m2 = $this->metaBoard->flaeche_m2;
-        $this->mietpreis_aufbautag = $this->metaBoard->mietpreis_aufbautag;
-        $this->mietpreis_abbautag = $this->metaBoard->mietpreis_abbautag;
-        $this->mietpreis_va_tag = $this->metaBoard->mietpreis_va_tag;
         $this->adresse = $this->metaBoard->adresse ?? '';
         $this->hallennummer = $this->metaBoard->hallennummer ?? '';
         $this->personenauslastung_max = $this->metaBoard->personenauslastung_max;
         $this->besonderheit = $this->metaBoard->besonderheit ?? '';
         $this->barrierefreiheit = $this->metaBoard->barrierefreiheit ?? false;
+        $this->selectedPricingId = $this->metaBoard->pricing_id;
         $this->selectedOccasionIds = $this->metaBoard->occasions()->pluck('location_occasions.id')->toArray();
 
         $this->selectedSeatingIds = $this->metaBoard->seatings()->pluck('location_seatings.id')->toArray();
@@ -120,11 +121,28 @@ class Show extends Component
         $this->metaBoard->seatings()->updateExistingPivot($seatingId, ['max_pax' => $maxPax]);
     }
 
+    public function loadPricings(): void
+    {
+        $this->availablePricings = LocationPricing::where('location_id', $this->metaBoard->location_id)
+            ->active()
+            ->orderBy('order')
+            ->get()
+            ->toArray();
+    }
+
+    public function updatePricing($pricingId): void
+    {
+        $pricingId = ($pricingId === '' || $pricingId === null || $pricingId === 'null') ? null : (int) $pricingId;
+
+        $this->selectedPricingId = $pricingId;
+        $this->metaBoard->update(['pricing_id' => $pricingId]);
+        $this->metaBoard->refresh();
+    }
+
     public function updateField($field, $value): void
     {
         $allowed = [
-            'name', 'description', 'flaeche_m2', 'mietpreis_aufbautag',
-            'mietpreis_abbautag', 'mietpreis_va_tag', 'adresse', 'hallennummer',
+            'name', 'description', 'flaeche_m2', 'adresse', 'hallennummer',
             'personenauslastung_max', 'besonderheit', 'barrierefreiheit',
         ];
 
@@ -133,7 +151,7 @@ class Show extends Component
         }
 
         // Convert empty strings to null for nullable numeric fields
-        $numericFields = ['flaeche_m2', 'mietpreis_aufbautag', 'mietpreis_abbautag', 'mietpreis_va_tag', 'personenauslastung_max'];
+        $numericFields = ['flaeche_m2', 'personenauslastung_max'];
         if (in_array($field, $numericFields) && ($value === '' || $value === null)) {
             $value = null;
         }
@@ -148,14 +166,12 @@ class Show extends Component
             'name' => $this->name,
             'description' => $this->description ?: null,
             'flaeche_m2' => $this->flaeche_m2 ?: null,
-            'mietpreis_aufbautag' => $this->mietpreis_aufbautag ?: null,
-            'mietpreis_abbautag' => $this->mietpreis_abbautag ?: null,
-            'mietpreis_va_tag' => $this->mietpreis_va_tag ?: null,
             'adresse' => $this->adresse ?: null,
             'hallennummer' => $this->hallennummer ?: null,
             'personenauslastung_max' => $this->personenauslastung_max ?: null,
             'besonderheit' => $this->besonderheit ?: null,
             'barrierefreiheit' => $this->barrierefreiheit,
+            'pricing_id' => $this->selectedPricingId,
         ]);
 
         $this->metaBoard->occasions()->sync($this->selectedOccasionIds);

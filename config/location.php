@@ -52,6 +52,11 @@ return [
                     'route' => 'location.settings.seatings.index',
                     'icon'  => 'heroicon-o-square-3-stack-3d',
                 ],
+                [
+                    'label' => 'Mietpreise',
+                    'route' => 'location.settings.pricings.index',
+                    'icon'  => 'heroicon-o-banknotes',
+                ],
             ],
         ],
     ],

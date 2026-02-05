@@ -47,14 +47,61 @@
                                 @svg('heroicon-o-photo', 'w-4 h-4 text-green-600')
                                 <span>Gallery Board</span>
                             </button>
-                            <button wire:click="createMetaBoard" class="w-full px-4 py-2 text-left text-sm hover:bg-[var(--ui-muted-5)] rounded-b-lg flex items-center gap-2">
+                            <button wire:click="createMetaBoard" class="w-full px-4 py-2 text-left text-sm hover:bg-[var(--ui-muted-5)] flex items-center gap-2">
                                 @svg('heroicon-o-clipboard-document-list', 'w-4 h-4 text-purple-600')
                                 <span>Meta Board</span>
+                            </button>
+                            <button wire:click="createPricingBoard" class="w-full px-4 py-2 text-left text-sm hover:bg-[var(--ui-muted-5)] rounded-b-lg flex items-center gap-2">
+                                @svg('heroicon-o-banknotes', 'w-4 h-4 text-amber-600')
+                                <span>Pricing Board</span>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {{-- Pricing Boards Section --}}
+            <x-ui-panel title="Pricing Boards" :subtitle="count($pricingBoards) . ' Board(s)'">
+                @if($pricingBoards->count() > 0)
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        @foreach($pricingBoards as $board)
+                            <a href="{{ route('location.pricing-boards.show', $board) }}" wire:navigate class="group block">
+                                <div class="bg-white rounded-xl border border-[var(--ui-border)] p-4 hover:shadow-md hover:border-amber-300 transition-all">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-[var(--ui-secondary)] group-hover:text-amber-600 transition-colors">{{ $board->name }}</h4>
+                                            @if($board->description)
+                                                <p class="text-sm text-[var(--ui-muted)] mt-1 line-clamp-2">{{ $board->description }}</p>
+                                            @endif
+                                        </div>
+                                        @svg('heroicon-o-banknotes', 'w-5 h-5 text-amber-600 flex-shrink-0 ml-2')
+                                    </div>
+                                    <div class="mt-3 flex items-center gap-2">
+                                        <span class="px-2 py-1 text-xs font-medium text-amber-700 bg-amber-50 rounded">Pricing Board</span>
+                                        @if($board->done)
+                                            <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Erledigt</span>
+                                        @endif
+                                    </div>
+                                    @if($board->mietpreis_aufbautag || $board->mietpreis_abbautag || $board->mietpreis_va_tag)
+                                        <div class="mt-2 flex items-center gap-3 text-xs text-[var(--ui-muted)]">
+                                            @if($board->mietpreis_aufbautag)
+                                                <span>Aufbau: {{ number_format($board->mietpreis_aufbautag, 2, ',', '.') }}</span>
+                                            @endif
+                                            @if($board->mietpreis_va_tag)
+                                                <span>VA: {{ number_format($board->mietpreis_va_tag, 2, ',', '.') }}</span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="p-6 text-center text-[var(--ui-muted)] bg-white rounded-md border border-[var(--ui-border)]">
+                        <p>Noch keine Pricing Boards vorhanden.</p>
+                    </div>
+                @endif
+            </x-ui-panel>
 
             {{-- Content Boards Section --}}
             <x-ui-panel title="Content Boards" :subtitle="count($contentBoards) . ' Board(s)'">
@@ -183,6 +230,10 @@
                 <div>
                     <h3 class="text-sm font-bold text-[var(--ui-secondary)] uppercase tracking-wider mb-3">Statistiken</h3>
                     <div class="space-y-3">
+                        <div class="p-3 bg-amber-50 rounded-lg border border-amber-100">
+                            <div class="text-xs text-amber-600">Pricing Boards</div>
+                            <div class="text-lg font-bold text-amber-700">{{ count($pricingBoards) }}</div>
+                        </div>
                         <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
                             <div class="text-xs text-blue-600">Content Boards</div>
                             <div class="text-lg font-bold text-blue-700">{{ count($contentBoards) }}</div>
