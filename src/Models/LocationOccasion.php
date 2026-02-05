@@ -5,6 +5,7 @@ namespace Platform\Location\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Platform\ActivityLog\Traits\LogsActivity;
 use Symfony\Component\Uid\UuidV7;
 
@@ -64,5 +65,18 @@ class LocationOccasion extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Meta Boards mit diesem Anlass
+     */
+    public function metaBoards(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            LocationMetaBoard::class,
+            'location_meta_board_occasion',
+            'occasion_id',
+            'meta_board_id'
+        )->withTimestamps();
     }
 }

@@ -97,6 +97,14 @@ class LocationLocation extends Model implements HasFileContext
     }
 
     /**
+     * Meta Boards of this location
+     */
+    public function metaBoards(): HasMany
+    {
+        return $this->hasMany(LocationMetaBoard::class, 'location_id')->orderBy('order');
+    }
+
+    /**
      * Scopes
      */
     public function scopeForTeam($query, $teamId)

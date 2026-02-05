@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Platform\Location\Models\LocationLocation;
 use Platform\Location\Models\LocationContentBoard;
 use Platform\Location\Models\LocationGalleryBoard;
+use Platform\Location\Models\LocationMetaBoard;
 
 class Show extends Component
 {
@@ -47,14 +48,31 @@ class Show extends Component
         return redirect()->route('location.gallery-boards.show', $board);
     }
 
+    public function createMetaBoard()
+    {
+        $user = Auth::user();
+        $team = $user->currentTeam;
+
+        $board = LocationMetaBoard::create([
+            'location_id' => $this->location->id,
+            'name' => 'Neues Meta Board',
+            'user_id' => $user->id,
+            'team_id' => $team->id,
+        ]);
+
+        return redirect()->route('location.meta-boards.show', $board);
+    }
+
     public function render()
     {
         $contentBoards = $this->location->contentBoards()->get();
         $galleryBoards = $this->location->galleryBoards()->get();
+        $metaBoards = $this->location->metaBoards()->get();
 
         return view('location::livewire.location.show', [
             'contentBoards' => $contentBoards,
             'galleryBoards' => $galleryBoards,
+            'metaBoards' => $metaBoards,
         ])->layout('platform::layouts.app');
     }
 }

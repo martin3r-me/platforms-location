@@ -8,6 +8,7 @@ use Platform\Location\Livewire\Site\Index as SiteIndex;
 use Platform\Location\Livewire\Site\Locations as SiteLocations;
 use Platform\Location\Livewire\ContentBoard\Show as ContentBoardShow;
 use Platform\Location\Livewire\GalleryBoard\Show as GalleryBoardShow;
+use Platform\Location\Livewire\MetaBoard\Show as MetaBoardShow;
 use Platform\Location\Livewire\Settings\OccasionIndex;
 use Platform\Location\Livewire\Settings\OccasionCreate;
 use Platform\Location\Livewire\Settings\OccasionEdit;
@@ -19,6 +20,7 @@ Route::get('/sites/{site}/locations', SiteLocations::class)->name('location.site
 Route::get('/locations/{location}', LocationShow::class)->name('location.locations.show');
 Route::get('/content-boards/{contentBoard}', ContentBoardShow::class)->name('location.content-boards.show');
 Route::get('/gallery-boards/{galleryBoard}', GalleryBoardShow::class)->name('location.gallery-boards.show');
+Route::get('/meta-boards/{metaBoard}', MetaBoardShow::class)->name('location.meta-boards.show');
 
 // Settings
 Route::get('/settings/occasions', OccasionIndex::class)->name('location.settings.occasions.index');
