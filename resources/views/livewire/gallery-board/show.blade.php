@@ -193,7 +193,7 @@
                                 Bild hinzufuegen
                             </span>
                         </x-ui-button>
-                        <x-ui-button variant="secondary-outline" size="sm" wire:click="$dispatch('files:open')" class="w-full">
+                        <x-ui-button variant="secondary-outline" size="sm" wire:click="$dispatch('toggle-terminal-open'); $wire.set('activeApp', 'files')" class="w-full">
                             <span class="flex items-center gap-2">
                                 @svg('heroicon-o-paper-clip', 'w-4 h-4')
                                 Dateien verwalten

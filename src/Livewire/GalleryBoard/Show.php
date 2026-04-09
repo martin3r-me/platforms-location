@@ -20,10 +20,15 @@ class Show extends Component
 
     public function rendered(): void
     {
-        // Kontext vom Model holen (nutzt Location statt GalleryBoard)
-        $this->dispatch('files', [
-            'context_type' => $this->galleryBoard->getFileContextType(),
-            'context_id' => $this->galleryBoard->getFileContextId(),
+        // Files-Tab im Terminal aktivieren
+        $this->dispatch('terminal:app:files');
+
+        // Kontext für Terminal setzen
+        $this->dispatch('comms', [
+            'model' => $this->galleryBoard->getFileContextType(),
+            'modelId' => $this->galleryBoard->getFileContextId(),
+            'subject' => $this->galleryBoard->name ?? 'Gallery Board',
+            'source' => 'location',
         ]);
     }
 
@@ -50,23 +55,22 @@ class Show extends Component
      */
     public function assignFile(int $referenceId): void
     {
-        $this->dispatch('files:assign', [
+        $this->dispatch('terminal:files:assign', [
             'reference_id' => $referenceId,
         ]);
     }
 
     public function openFilePicker(): void
     {
-        // Modal übernimmt alles: Varianten-Auswahl + Referenz-Erstellung
-        $this->dispatch('files:picker', [
+        // Terminal übernimmt: Datei-Auswahl + Referenz-Erstellung
+        $this->dispatch('terminal:files:pick', [
             'reference_type' => LocationGalleryBoard::class,
             'reference_id' => $this->galleryBoard->id,
             'multiple' => true,
         ]);
     }
 
-    #[On('files:reference-created')]
-    #[On('files:reference-deleted')]
+    #[On('terminal:files:reference-created')]
     public function handleReferenceChanged(array $payload): void
     {
         // Nur prüfen ob es uns betrifft
@@ -81,7 +85,7 @@ class Show extends Component
         $this->loadItems();
     }
 
-    #[On('files:reference-updated')]
+    #[On('terminal:files:reference-updated')]
     public function handleReferenceUpdated(array $payload): void
     {
         $this->loadItems();
